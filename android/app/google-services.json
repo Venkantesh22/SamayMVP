@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "401246625585",
+    "project_id": "samay-mvp",
+    "storage_bucket": "samay-mvp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401246625585:android:668b1c8b4a124ab67c1a10",
+        "android_client_info": {
+          "package_name": "com.example.samay_mvp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8mrIbVDj-5lU_VE04EqKzWxk35pjPMHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
