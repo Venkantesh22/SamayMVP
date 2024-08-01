@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
+import 'package:samay_mvp/features/select_time/screen/select_time.dart';
+import 'package:samay_mvp/features/watch_list/screen/watch_list.dart';
 import 'package:samay_mvp/features/winder_profile/screen/winder_profile_screen.dart';
 import 'package:samay_mvp/features/winder_profile/widgets/category_tap.dart';
 import 'package:samay_mvp/features/winder_profile/widgets/two_button.dart';
@@ -11,6 +14,8 @@ import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
+import 'package:samay_mvp/widget/custom_button.dart';
+import 'package:badges/badges.dart' as badges;
 
 class WinderServiceScreen extends StatefulWidget {
   final SalonModel salonModel;
@@ -36,7 +41,6 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
       widget.salonModel.id,
       widget.salonModel.adminId,
     );
-
     setState(() {
       isLoading = false;
     });
@@ -45,12 +49,24 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
   @override
   void initState() {
     getWinderData();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     AppProvider appProvider = Provider.of<AppProvider>(context);
+
+    void _showWatchList(BuildContext context) {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return WatchList();
+        },
+        isScrollControlled: true,
+      );
+    }
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) {
@@ -67,301 +83,268 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
         drawer: const CustomDrawer(),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.dimenisonNo16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: Dimensions.dimenisonNo16),
-                              height: Dimensions.dimenisonNo250,
-                              width: double.infinity,
-                              // ignore: prefer_const_constructors
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    widget.salonModel.image!,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    Dimensions.dimenisonNo10),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.dimenisonNo16),
-                          // Salon Name
-                          Container(
-                            width: double.infinity,
-                            height: Dimensions.dimenisonNo60,
-                            margin: EdgeInsets.symmetric(
-                                horizontal: Dimensions.dimenisonNo16),
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    Dimensions.dimenisonNo10),
-                              ),
-                              shadows: [
-                                BoxShadow(
-                                  color: const Color(0x3F000000),
-                                  blurRadius: Dimensions.dimenisonNo10,
-                                  offset: const Offset(0, -1),
-                                  spreadRadius: 0,
-                                )
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                widget.salonModel.name,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: Dimensions.dimenisonNo24,
-                                  fontFamily: GoogleFonts.roboto().fontFamily,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.25,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.dimenisonNo16),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.dimenisonNo16),
-                            child: TwoButton(
-                              detailBgColor: Colors.white,
-                              detailTextColor: AppColor.buttonColor,
-                              serviceBgColor: AppColor.buttonColor,
-                              serviceTextColor: Colors.white,
-                              detailOnTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        WinderProfileScreen(
-                                      salonModel: widget.salonModel,
+            : Stack(
+                children: [
+                  CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.dimenisonNo16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: Dimensions.dimenisonNo16),
+                                  height: Dimensions.dimenisonNo250,
+                                  width: double.infinity,
+                                  // ignore: prefer_const_constructors
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        widget.salonModel.image!,
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return child; // No animation transition
-                                    },
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.dimenisonNo10),
                                   ),
-                                );
-                              },
-                              serviceOnTap: () {},
-                            ),
+                                ),
+                              ),
+                              SizedBox(height: Dimensions.dimenisonNo16),
+                              // Salon Name
+                              Container(
+                                width: double.infinity,
+                                height: Dimensions.dimenisonNo60,
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.dimenisonNo16),
+                                decoration: ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.dimenisonNo10),
+                                  ),
+                                  shadows: [
+                                    BoxShadow(
+                                      color: const Color(0x3F000000),
+                                      blurRadius: Dimensions.dimenisonNo10,
+                                      offset: const Offset(0, -1),
+                                      spreadRadius: 0,
+                                    )
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    widget.salonModel.name,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: Dimensions.dimenisonNo24,
+                                      fontFamily:
+                                          GoogleFonts.roboto().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.25,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: Dimensions.dimenisonNo16),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.dimenisonNo16),
+                                child: TwoButton(
+                                  detailBgColor: Colors.white,
+                                  detailTextColor: AppColor.buttonColor,
+                                  serviceBgColor: AppColor.buttonColor,
+                                  serviceTextColor: Colors.white,
+                                  detailOnTap: () {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            WinderProfileScreen(
+                                          salonModel: widget.salonModel,
+                                        ),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return child; // No animation transition
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  serviceOnTap: () {},
+                                ),
+                              ),
+                              SizedBox(height: Dimensions.dimenisonNo12),
+                              Divider(),
+                            ],
                           ),
-                          SizedBox(height: Dimensions.dimenisonNo12),
-                          Divider(),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        CategoryModel categoryModel =
-                            appProvider.getcategoryList[index];
-                        return CategoryTap(
-                          categoryModel: categoryModel,
-                          salonModel: widget.salonModel,
-                        );
-                      },
-                      childCount: appProvider.getcategoryList.length,
-                    ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            CategoryModel categoryModel =
+                                appProvider.getcategoryList[index];
+
+                            return CategoryTap(
+                              categoryModel: categoryModel,
+                              salonModel: widget.salonModel,
+                            );
+                          },
+                          childCount: appProvider.getcategoryList.length,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+
+        floatingActionButton: appProvider.getWatchList.isNotEmpty
+            ? badges.Badge(
+                badgeContent: Text(
+                  appProvider.getWatchList.length.toString(),
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+                badgeStyle: const badges.BadgeStyle(
+                  badgeColor: AppColor.buttonColor,
+                  elevation: 10,
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    _showWatchList(context);
+                  },
+                  child: Icon(
+                    Icons.watch_later_rounded,
+                    size: Dimensions.dimenisonNo40,
+                  ),
+                ),
+              )
+            : null,
+
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        // floatingActionButton: appProvider.getWatchList.isNotEmpty
+        //     ? SizedBox(
+        //         height: 80,
+        //         child: Stack(
+        //           children: [
+        //             FloatingActionButton(
+        //               onPressed: () {
+        //                 _showWatchList(context);
+        //               },
+        //               child: Icon(
+        //                 Icons.watch_later_rounded,
+        //                 size: Dimensions.dimenisonNo40,
+        //               ),
+        //             ),
+        //             badges.Badge(
+        //               badgeContent: Text(
+        //                 appProvider.getWatchList.length.toString(),
+        //                 style: const TextStyle(
+        //                     color: Colors.white, fontWeight: FontWeight.w600),
+        //               ),
+        //               badgeStyle: const badges.BadgeStyle(
+        //                 badgeColor: AppColor.buttonColor,
+        //                 elevation: 10,
+        //               ),
+        //             ),
+        //             Positioned(
+        //               bottom: Dimensions.dimenisonNo5,
+        //               right: -Dimensions.dimenisonNo5,
+        //               child: Container(
+        //                 padding: EdgeInsets.symmetric(
+        //                     horizontal: Dimensions.dimenisonNo5,
+        //                     vertical: Dimensions.dimenisonNo5),
+        //                 decoration: BoxDecoration(
+        //                   borderRadius:
+        //                       BorderRadius.circular(Dimensions.dimenisonNo10),
+        //                   color: const Color.fromARGB(255, 202, 201, 201),
+        //                 ),
+        //                 child: Center(
+        //                   child: Text(
+        //                     appProvider.getServiceBookingDuration,
+        //                     style: TextStyle(
+        //                         fontSize: Dimensions.dimenisonNo14,
+        //                         fontWeight: FontWeight.w500,
+        //                         letterSpacing: 1),
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       )
+        //     : null,
+        bottomNavigationBar: appProvider.getWatchList.isNotEmpty
+            ? Container(
+                height: Dimensions.dimenisonNo80,
+                padding: EdgeInsets.fromLTRB(
+                    Dimensions.dimenisonNo16,
+                    Dimensions.dimenisonNo10,
+                    Dimensions.dimenisonNo16,
+                    Dimensions.dimenisonNo10),
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(Dimensions.dimenisonNo20))),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: CustomButtom(
+                            text: 'Select Time',
+                            ontap: () {
+                              Routes.instance.push(
+                                  widget: SelectBooking(
+                                      salonModel: widget.salonModel),
+                                  context: context);
+                            })),
+                    // SizedBox(
+                    //   width: Dimensions.dimenisonNo20,
+                    // ),
+                    // Column(
+                    //   children: [
+                    //     Text(
+                    //       "SubTotal",
+                    //       style: TextStyle(
+                    //         color: Colors.black,
+                    //         fontSize: Dimensions.dimenisonNo14,
+                    //         fontFamily: GoogleFonts.roboto().fontFamily,
+                    //         fontWeight: FontWeight.w600,
+                    //         letterSpacing: 1,
+                    //       ),
+                    //     ),
+                    //     SizedBox(
+                    //       height: Dimensions.dimenisonNo5,
+                    //     ),
+                    //     Row(
+                    //       children: [
+                    //         Icon(
+                    //           Icons.currency_rupee,
+                    //           size: Dimensions.dimenisonNo22,
+                    //         ),
+                    //         Text(
+                    //           appProvider.getSubTotal.toString(),
+                    //           style: TextStyle(
+                    //             color: Colors.black,
+                    //             fontSize: Dimensions.dimenisonNo20,
+                    //             fontFamily: GoogleFonts.roboto().fontFamily,
+                    //             fontWeight: FontWeight.bold,
+                    //             letterSpacing: 1,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     )
+                    //   ],
+                    // )
+                  ],
+                ),
+              )
+            : null,
       ),
     );
   }
 }
-// class _WinderServiceScreenState extends State<WinderServiceScreen> {
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-//   bool isLoading = false;
-
-//   void getWinderData() async {
-//     setState(() {
-//       isLoading = true;
-//     });
-//     AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
-//     await appProvider.callBackFunctionWinder(
-//       widget.salonModel.id,
-//       widget.salonModel.adminId,
-//     );
-//     setState(() {
-//       isLoading = false;
-//     });
-
-//     // Debug prints to check data
-//     print("Categories: ${appProvider.getcategoryList}");
-//     print("Services: ${appProvider.getServiceList}");
-//   }
-
-//   @override
-//   void initState() {
-//     getWinderData();
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     AppProvider appProvider = Provider.of<AppProvider>(context);
-
-//     // Filter categories with available services
-//     List<CategoryModel> categoriesWithServices =
-//         appProvider.getcategoryList.where((category) {
-//       List<ServiceModel> services = appProvider.getServiceList
-//           .where((service) => service.categoryId == category.id)
-//           .toList();
-//       print("Category: ${category.id}, Services Count: ${services.length}");
-//       return services.isNotEmpty;
-//     }).toList();
-
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       key: _scaffoldKey,
-//       appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
-//       drawer: const CustomDrawer(),
-//       body: isLoading
-//           ? const Center(child: CircularProgressIndicator())
-//           : CustomScrollView(
-//               slivers: [
-//                 SliverToBoxAdapter(
-//                   child: Padding(
-//                     padding: EdgeInsets.symmetric(
-//                         vertical: Dimensions.dimenisonNo16),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Center(
-//                           child: Container(
-//                             margin: EdgeInsets.symmetric(
-//                                 horizontal: Dimensions.dimenisonNo16),
-//                             height: Dimensions.dimenisonNo250,
-//                             width: double.infinity,
-//                             clipBehavior: Clip.antiAlias,
-//                             decoration: BoxDecoration(
-//                               image: DecorationImage(
-//                                 image: NetworkImage(
-//                                   widget.salonModel.image!,
-//                                 ),
-//                                 fit: BoxFit.cover,
-//                               ),
-//                               borderRadius: BorderRadius.circular(
-//                                   Dimensions.dimenisonNo10),
-//                             ),
-//                           ),
-//                         ),
-//                         SizedBox(height: Dimensions.dimenisonNo16),
-//                         // Salon Name
-//                         Container(
-//                           width: double.infinity,
-//                           height: Dimensions.dimenisonNo60,
-//                           margin: EdgeInsets.symmetric(
-//                               horizontal: Dimensions.dimenisonNo16),
-//                           decoration: ShapeDecoration(
-//                             color: Colors.white,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(
-//                                   Dimensions.dimenisonNo10),
-//                             ),
-//                             shadows: [
-//                               BoxShadow(
-//                                 color: const Color(0x3F000000),
-//                                 blurRadius: Dimensions.dimenisonNo10,
-//                                 offset: const Offset(0, -1),
-//                                 spreadRadius: 0,
-//                               )
-//                             ],
-//                           ),
-//                           child: Center(
-//                             child: Text(
-//                               widget.salonModel.name,
-//                               style: TextStyle(
-//                                 color: Colors.black,
-//                                 fontSize: Dimensions.dimenisonNo24,
-//                                 fontFamily: GoogleFonts.roboto().fontFamily,
-//                                 fontWeight: FontWeight.bold,
-//                                 letterSpacing: 1.25,
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                         SizedBox(height: Dimensions.dimenisonNo16),
-//                         Padding(
-//                           padding: EdgeInsets.symmetric(
-//                               horizontal: Dimensions.dimenisonNo16),
-//                           child: TwoButton(
-//                             detailBgColor: Colors.white,
-//                             detailTextColor: AppColor.buttonColor,
-//                             serviceBgColor: AppColor.buttonColor,
-//                             serviceTextColor: Colors.white,
-//                             detailOnTap: () {
-//                               Navigator.push(
-//                                 context,
-//                                 PageRouteBuilder(
-//                                   pageBuilder: (context, animation,
-//                                           secondaryAnimation) =>
-//                                       WinderProfileScreen(
-//                                     salonModel: widget.salonModel,
-//                                   ),
-//                                   transitionsBuilder: (context, animation,
-//                                       secondaryAnimation, child) {
-//                                     return child; // No animation transition
-//                                   },
-//                                 ),
-//                               );
-//                             },
-//                             serviceOnTap: () {},
-//                           ),
-//                         ),
-//                         SizedBox(height: Dimensions.dimenisonNo12),
-//                         Divider(),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 SliverList(
-//                   delegate: SliverChildBuilderDelegate(
-//                     (context, index) {
-//                       if (categoriesWithServices.isEmpty) {
-//                         return Center(
-//                           child: Padding(
-//                             padding: EdgeInsets.all(Dimensions.dimenisonNo16),
-//                             child: Text(
-//                               "No Categories with Services Available",
-//                               style: TextStyle(
-//                                 fontSize: Dimensions.dimenisonNo24,
-//                                 fontFamily: GoogleFonts.roboto().fontFamily,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       }
-//                       CategoryModel categoryModel =
-//                           categoriesWithServices[index];
-//                       return CategoryTap(
-//                         categoryModel: categoryModel,
-//                         salonModel: widget.salonModel,
-//                       );
-//                     },
-//                     childCount: categoriesWithServices.isEmpty
-//                         ? 1
-//                         : categoriesWithServices.length,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//     );
-//   }
-// }

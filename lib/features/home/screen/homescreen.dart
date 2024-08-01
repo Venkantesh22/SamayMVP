@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
@@ -6,6 +7,7 @@ import 'package:samay_mvp/features/winder_profile/screen/winder_profile_screen.d
 import 'package:samay_mvp/features/home/widget/service_tap.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
+import 'package:samay_mvp/provider/app_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,7 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       isLoading = true;
     });
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
     salonModelList = await FirebaseFirestoreHelper.instance.getSalonListFB();
+    appProvider.getWatchList.clear();
+
     setState(() {
       isLoading = false;
     });

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:samay_mvp/features/app_bar/app_bar.dart';
-import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/features/watch_list/widget/service_tap.dart';
-import 'package:samay_mvp/models/watchlist_service_model/watchlist_service_model.dart';
+import 'package:samay_mvp/models/service_model/service_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 
@@ -17,51 +15,138 @@ class WatchList extends StatefulWidget {
 }
 
 class _WatchListState extends State<WatchList> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
+    AppProvider appProvider = Provider.of<AppProvider>(context);
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: const Color(0xFFF3F3F3),
-      key: _scaffoldKey,
-      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
-      drawer: const CustomDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(Dimensions.dimenisonNo16),
-        child: Column(
-          children: [
-            Consumer<AppProvider>(
-              builder: (context, appProvider, child) {
-                return StreamBuilder<List<WatchListServiceModel>>(
-                  stream: appProvider.getWatchListStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                          child: Text('No services in your watch list.'));
-                    }
-
-                    List<WatchListServiceModel> watchList = snapshot.data!;
-                    return ListView.builder(
-                      
-                      itemCount: watchList.length,
-                      itemBuilder: (context, index) {
-                        return SingleServiceTap(
-                          watchListServiceModel: watchList[index],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF3F3F3),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFF3F3F3),
+          title: Center(
+            child: const Text(
+              'Watch List',
+              textAlign: TextAlign.center,
             ),
-          ],
+          ),
         ),
+        body: appProvider.getWatchList.isEmpty
+            ? Center(
+                child: Text(
+                  'No service is add',
+                  style: TextStyle(fontSize: Dimensions.dimenisonNo20),
+                ),
+              )
+            : SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.only(top: Dimensions.dimenisonNo20),
+                  padding: EdgeInsets.all(Dimensions.dimenisonNo16),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(Dimensions.dimenisonNo10),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.dimenisonNo10),
+                            color: const Color.fromARGB(255, 201, 200, 200)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Detail',
+                              style: TextStyle(
+                                fontSize: Dimensions.dimenisonNo20,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: Dimensions.dimenisonNo10),
+                              child: Divider(
+                                color: Colors.white,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Subtotal :- ",
+                                  style: TextStyle(
+                                    fontSize: Dimensions.dimenisonNo20,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: Dimensions.dimenisonNo20,
+                                ),
+                                Icon(
+                                  Icons.currency_rupee_sharp,
+                                  size: Dimensions.dimenisonNo22,
+                                ),
+                                Text(
+                                  appProvider.getSubTotal.toString(),
+                                  style: TextStyle(
+                                    fontSize: Dimensions.dimenisonNo20,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Total Time :- ",
+                                  style: TextStyle(
+                                    fontSize: Dimensions.dimenisonNo20,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: Dimensions.dimenisonNo20,
+                                ),
+                                Icon(
+                                  Icons.watch_later_rounded,
+                                  size: Dimensions.dimenisonNo22,
+                                ),
+                                SizedBox(
+                                  width: Dimensions.dimenisonNo10,
+                                ),
+                                Text(
+                                  appProvider.getServiceBookingDuration
+                                      .toString(),
+                                  style: TextStyle(
+                                    fontSize: Dimensions.dimenisonNo20,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: Dimensions.dimenisonNo20,
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: appProvider.getWatchList.length,
+                        itemBuilder: (context, index) {
+                          ServiceModel serviceModel =
+                              appProvider.getWatchList[index];
+
+                          return SingleServiceTap(serviceModel: serviceModel);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
-    ));
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:samay_mvp/constants/theme.dart';
 import 'package:samay_mvp/features/auth/screen/login.dart';
 import 'package:samay_mvp/features/home/screen/ex.dart';
 import 'package:samay_mvp/features/home/screen/homescreen.dart';
+import 'package:samay_mvp/features/select_time/screen/select_time.dart';
 import 'package:samay_mvp/features/winder_profile/screen/winder_profile_screen.dart';
 import 'package:samay_mvp/firebase_helper/firebase_auth_helper/firebase_auth_helper.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
@@ -27,14 +28,12 @@ class MyApp extends StatelessWidget {
         title: 'Samay',
         theme: themeData,
         debugShowCheckedModeBanner: false,
-        home:
+        // home: Builder(builder: (context) {
+        //   Dimensions.init(context);
+        //   return SelectTime();
+        // }),
 
-            // Builder(builder: (context) {
-            //   Dimensions.init(context);
-            //   return MyEx();
-            // })
-
-            StreamBuilder(
+        home: StreamBuilder(
           stream: FirebaseAuthHelper.instance.getAuthChange,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -47,8 +46,6 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           '/home': (context) => HomeScreen(),
-          // '/second': (context) => SecondScreen(),
-          // '/third': (context) => ThirdScreen(),
         },
       ),
     );

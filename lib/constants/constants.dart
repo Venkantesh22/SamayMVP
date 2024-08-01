@@ -7,7 +7,27 @@ void showMessage(String message) {
     msg: message,
     backgroundColor: Colors.grey,
     textColor: Colors.black,
-    fontSize: 16.0,
+    fontSize: Dimensions.dimenisonNo16,
+  );
+}
+
+// Function to show a message when a holiday is selected
+void showMeassgeAlertDialog(BuildContext context, String title, message) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        // content:  Text('The salon is closed on the selected date.'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
   );
 }
 

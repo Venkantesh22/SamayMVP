@@ -51,6 +51,8 @@ class Dimensions {
   static double dimenisonNo24 = screenHeight / 40.125;
   static double dimenisonNo30 = screenHeight / 32.1;
   static double dimenisonNo36 = screenHeight / 26.75;
+  static double dimenisonNo40 = screenHeight / 21.65;
+  static double dimenisonNo50 = screenHeight / 17.32;
   static double dimenisonNo55 = screenHeight / 17.5090;
   static double dimenisonNo60 = screenHeight / 16.05;
   static double dimenisonNo70 = screenHeight / 13.75714;

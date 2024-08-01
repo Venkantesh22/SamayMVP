@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:samay_mvp/constants/router.dart';
-import 'package:samay_mvp/features/watch_list/screen/watch_list.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 
@@ -35,15 +33,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
       actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.watch_later,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Routes.instance.push(widget: WatchList(), context: context);
-          },
-        ),
+        SizedBox(
+          width: Dimensions.dimenisonNo50,
+        )
       ],
     );
   }

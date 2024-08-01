@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:samay_mvp/utility/dimension.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -28,7 +29,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return TextFormField(
       obscureText: widget.obscureForPassword,
-      style: const TextStyle(fontSize: 18, color: Colors.white),
+      style: TextStyle(fontSize: Dimensions.dimenisonNo18, color: Colors.white),
       controller: widget.controller,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
@@ -46,12 +47,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : null,
         prefixIcon: widget.prefixIcon,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(Dimensions.dimenisonNo12),
         ),
         hintText: widget.hintText,
         hintStyle: TextStyle(
           color: const Color(0xFF959595),
-          fontSize: 14,
+          fontSize: Dimensions.dimenisonNo14,
           fontFamily: GoogleFonts.roboto().fontFamily,
           fontWeight: FontWeight.w400,
         ),

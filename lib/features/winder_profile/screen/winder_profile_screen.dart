@@ -13,6 +13,7 @@ import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
+import 'package:samay_mvp/widget/custom_chip.dart';
 
 class WinderProfileScreen extends StatefulWidget {
   final SalonModel salonModel;
@@ -35,11 +36,11 @@ class _WinderProfileScreenState extends State<WinderProfileScreen> {
     });
     AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
 
-    appProvider.getSalonInfoFirebase(
+    appProvider.getSalonInfoFirebasePro(
         widget.salonModel.adminId, widget.salonModel.id);
     setState(() {
       isLoading = true;
-      GlobalVariable.salonName = widget.salonModel.name;
+      GlobalVariable.adminId = widget.salonModel.adminId;
     });
   }
 
@@ -157,30 +158,32 @@ class _WinderProfileScreenState extends State<WinderProfileScreen> {
                   height: Dimensions.dimenisonNo16,
                 ),
                 // Salon Type
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.dimenisonNo15,
-                      vertical: Dimensions.dimenisonNo5),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFEEEFF3),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          width: 2, color: Colors.black.withOpacity(0.3)),
-                      borderRadius:
-                          BorderRadius.circular(Dimensions.dimenisonNo10),
-                    ),
-                  ),
-                  child: Text(
-                    widget.salonModel.salonType,
-                    style: TextStyle(
-                      color: const Color(0xFF454545),
-                      fontSize: Dimensions.dimenisonNo12,
-                      fontFamily: GoogleFonts.roboto().fontFamily,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
+                CustomChip(text: widget.salonModel.salonType),
+                // Chip(text: widget.salonModel.salonType),
+                // Container(
+                //   padding: EdgeInsets.symmetric(
+                //       horizontal: Dimensions.dimenisonNo15,
+                //       vertical: Dimensions.dimenisonNo5),
+                //   decoration: ShapeDecoration(
+                //     color: const Color(0xFFEEEFF3),
+                //     shape: RoundedRectangleBorder(
+                //       side: BorderSide(
+                //           width: 2, color: Colors.black.withOpacity(0.3)),
+                //       borderRadius:
+                //           BorderRadius.circular(Dimensions.dimenisonNo10),
+                //     ),
+                //   ),
+                //   child: Text(
+                //     widget.salonModel.salonType,
+                //     style: TextStyle(
+                //       color: const Color(0xFF454545),
+                //       fontSize: Dimensions.dimenisonNo12,
+                //       fontFamily: GoogleFonts.roboto().fontFamily,
+                //       fontWeight: FontWeight.bold,
+                //       letterSpacing: 1,
+                //     ),
+                //   ),
+                // ),
 
                 // Description
                 Padding(
