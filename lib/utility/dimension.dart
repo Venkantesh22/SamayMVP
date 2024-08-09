@@ -40,6 +40,7 @@ class Dimensions {
 
   static double dimenisonNo1 = screenHeight / 963;
   static double dimenisonNo5 = screenHeight / 192.6;
+  static double dimenisonNo8 = screenHeight / 108.25;
   static double dimenisonNo10 = screenHeight / 96.3;
   static double dimenisonNo12 = screenHeight / 80.25;
   static double dimenisonNo14 = screenHeight / 68.7857142;
@@ -60,6 +61,7 @@ class Dimensions {
   static double dimenisonNo100 = screenHeight / 9.63;
   static double dimenisonNo110 = screenHeight / 8.754545454545455;
   static double dimenisonNo120 = screenHeight / 8.025;
+  static double dimenisonNo130 = screenHeight / 6.661538461;
   static double dimenisonNo150 = screenHeight / 6.42;
   static double dimenisonNo180 = screenHeight / 5.35;
   static double dimenisonNo200 = screenHeight / 4.815;

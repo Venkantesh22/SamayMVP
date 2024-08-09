@@ -1,61 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
-import 'package:samay_mvp/utility/color.dart';
+import 'package:intl/intl.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 
-class TimeTap extends StatefulWidget {
-  final SalonModel salonModel;
-  const TimeTap({
-    Key? key,
-    required this.salonModel,
-  }) : super(key: key);
+class TimeSlot extends StatelessWidget {
+  final String section;
+  final List<String> timeSlots;
+  final String? selectedTimeSlot;
+  final int serviceDurationInMinutes;
+  final DateTime? endTime;
+  final ValueChanged<String> onTimeSlotSelected;
 
-  @override
-  State<TimeTap> createState() => _TimeTapState();
-}
-
-class _TimeTapState extends State<TimeTap> {
-  bool selectTime = false;
+  const TimeSlot({
+    required this.section,
+    required this.timeSlots,
+    required this.selectedTimeSlot,
+    required this.serviceDurationInMinutes,
+    required this.endTime,
+    required this.onTimeSlotSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Dimensions.dimenisonNo55,
-      child: ElevatedButton(
-        onPressed: () {
-          setState(() {
-            selectTime = !selectTime;
-          });
-          print(selectTime);
-        },
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsetsDirectional.symmetric(
-              horizontal: Dimensions.dimenisonNo30),
-          backgroundColor: selectTime
-              ? AppColor.buttonColor
-              : Color.fromARGB(255, 184, 182, 182),
-          foregroundColor: Colors.white,
-          // Text color
-          side: const BorderSide(
-            width: 3,
-            color: Color(0x3F000000),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Text(
-          widget.salonModel.openTime,
+    if (timeSlots.isEmpty) return Container();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section title
+        Text(
+          section,
           style: TextStyle(
-            color: selectTime ? Colors.white : Colors.black,
-            fontSize: Dimensions.dimenisonNo20,
-            fontFamily: GoogleFonts.roboto().fontFamily,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
+              fontSize: Dimensions.dimenisonNo22, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: Dimensions.dimenisonNo16),
+        // Time slots grid
+        Container(
+          color: Colors.white,
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 2.5,
+              crossAxisSpacing: Dimensions.dimenisonNo10,
+              mainAxisSpacing: Dimensions.dimenisonNo10,
+            ),
+            itemCount: timeSlots.length,
+            itemBuilder: (context, index) {
+              final timeSlot = timeSlots[index];
+              final DateTime slotStartTime =
+                  DateFormat('hh:mm a').parse(timeSlot);
+              final DateTime slotEndTime = slotStartTime
+                  .add(Duration(minutes: serviceDurationInMinutes));
+
+              bool isWithinDuration = slotEndTime.isBefore(endTime!) ||
+                  slotEndTime.isAtSameMomentAs(endTime!);
+
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedTimeSlot == timeSlot
+                      ? Colors.blue
+                      : isWithinDuration
+                          ? Colors.green
+                          : Colors.grey,
+                  foregroundColor: selectedTimeSlot == timeSlot
+                      ? Colors.white
+                      : Colors.black,
+                  side: const BorderSide(color: Colors.black),
+                ),
+                onPressed: isWithinDuration
+                    ? () => onTimeSlotSelected(timeSlot)
+                    : null,
+                child: Text(timeSlot),
+              );
+            },
           ),
         ),
-      ),
+        SizedBox(height: Dimensions.dimenisonNo16),
+      ],
     );
   }
 }

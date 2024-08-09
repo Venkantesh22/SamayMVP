@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
-import 'package:samay_mvp/features/select_time/screen/select_time.dart';
+import 'package:samay_mvp/features/select_time/screen/select_booking.dart';
 import 'package:samay_mvp/features/watch_list/screen/watch_list.dart';
 import 'package:samay_mvp/features/winder_profile/screen/winder_profile_screen.dart';
 import 'package:samay_mvp/features/winder_profile/widgets/category_tap.dart';
@@ -202,7 +202,6 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
                   ),
                 ],
               ),
-
         floatingActionButton: appProvider.getWatchList.isNotEmpty
             ? badges.Badge(
                 badgeContent: Text(
@@ -225,60 +224,7 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
                 ),
               )
             : null,
-
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        // floatingActionButton: appProvider.getWatchList.isNotEmpty
-        //     ? SizedBox(
-        //         height: 80,
-        //         child: Stack(
-        //           children: [
-        //             FloatingActionButton(
-        //               onPressed: () {
-        //                 _showWatchList(context);
-        //               },
-        //               child: Icon(
-        //                 Icons.watch_later_rounded,
-        //                 size: Dimensions.dimenisonNo40,
-        //               ),
-        //             ),
-        //             badges.Badge(
-        //               badgeContent: Text(
-        //                 appProvider.getWatchList.length.toString(),
-        //                 style: const TextStyle(
-        //                     color: Colors.white, fontWeight: FontWeight.w600),
-        //               ),
-        //               badgeStyle: const badges.BadgeStyle(
-        //                 badgeColor: AppColor.buttonColor,
-        //                 elevation: 10,
-        //               ),
-        //             ),
-        //             Positioned(
-        //               bottom: Dimensions.dimenisonNo5,
-        //               right: -Dimensions.dimenisonNo5,
-        //               child: Container(
-        //                 padding: EdgeInsets.symmetric(
-        //                     horizontal: Dimensions.dimenisonNo5,
-        //                     vertical: Dimensions.dimenisonNo5),
-        //                 decoration: BoxDecoration(
-        //                   borderRadius:
-        //                       BorderRadius.circular(Dimensions.dimenisonNo10),
-        //                   color: const Color.fromARGB(255, 202, 201, 201),
-        //                 ),
-        //                 child: Center(
-        //                   child: Text(
-        //                     appProvider.getServiceBookingDuration,
-        //                     style: TextStyle(
-        //                         fontSize: Dimensions.dimenisonNo14,
-        //                         fontWeight: FontWeight.w500,
-        //                         letterSpacing: 1),
-        //                   ),
-        //                 ),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       )
-        //     : null,
         bottomNavigationBar: appProvider.getWatchList.isNotEmpty
             ? Container(
                 height: Dimensions.dimenisonNo80,
@@ -302,44 +248,6 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
                                       salonModel: widget.salonModel),
                                   context: context);
                             })),
-                    // SizedBox(
-                    //   width: Dimensions.dimenisonNo20,
-                    // ),
-                    // Column(
-                    //   children: [
-                    //     Text(
-                    //       "SubTotal",
-                    //       style: TextStyle(
-                    //         color: Colors.black,
-                    //         fontSize: Dimensions.dimenisonNo14,
-                    //         fontFamily: GoogleFonts.roboto().fontFamily,
-                    //         fontWeight: FontWeight.w600,
-                    //         letterSpacing: 1,
-                    //       ),
-                    //     ),
-                    //     SizedBox(
-                    //       height: Dimensions.dimenisonNo5,
-                    //     ),
-                    //     Row(
-                    //       children: [
-                    //         Icon(
-                    //           Icons.currency_rupee,
-                    //           size: Dimensions.dimenisonNo22,
-                    //         ),
-                    //         Text(
-                    //           appProvider.getSubTotal.toString(),
-                    //           style: TextStyle(
-                    //             color: Colors.black,
-                    //             fontSize: Dimensions.dimenisonNo20,
-                    //             fontFamily: GoogleFonts.roboto().fontFamily,
-                    //             fontWeight: FontWeight.bold,
-                    //             letterSpacing: 1,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     )
-                    //   ],
-                    // )
                   ],
                 ),
               )

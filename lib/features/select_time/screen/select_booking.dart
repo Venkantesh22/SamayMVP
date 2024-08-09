@@ -1,29 +1,419 @@
+// import 'package:flutter/material.dart';
+// import 'package:intl/intl.dart';
+// import 'package:provider/provider.dart';
+// import 'package:samay_mvp/features/select_time/widget/calender.dart';
+// import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
+// import 'package:samay_mvp/provider/app_provider.dart';
+// import 'package:samay_mvp/utility/dimension.dart';
+
+// class SelectBooking extends StatefulWidget {
+//   final SalonModel salonModel;
+
+//   const SelectBooking({
+//     Key? key,
+//     required this.salonModel,
+//   }) : super(key: key);
+
+//   @override
+//   _SelectBookingState createState() => _SelectBookingState();
+// }
+
+// class _SelectBookingState extends State<SelectBooking> {
+//   final TextEditingController _dateController = TextEditingController();
+//   final TextEditingController _timeController = TextEditingController();
+//   String? _selectedTimeSlot;
+
+//   DateTime? _startTime;
+//   DateTime? _endTime;
+
+//   Map<String, List<String>> _categorizedTimeSlots = {
+//     'Morning': [],
+//     'Afternoon': [],
+//     'Evening': [],
+//     'Night': [],
+//   };
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _initializeTimes();
+//   }
+
+//   void _initializeTimes() {
+//     try {
+//       String openTimeString = _normalizeTimeString(widget.salonModel.openTime);
+//       String closeTimeString =
+//           _normalizeTimeString(widget.salonModel.closeTime);
+
+//       _startTime = DateFormat('hh:mm a').parse(openTimeString);
+//       _endTime = DateFormat('hh:mm a').parse(closeTimeString);
+//     } catch (e) {
+//       print('Error parsing time: $e');
+//     }
+//   }
+
+//   String _normalizeTimeString(String timeString) {
+//     return timeString.replaceAllMapped(
+//       RegExp(r'(\d{1,2}):(\d{2})\s*(AM|PM)'),
+//       (match) => '${match[1]?.padLeft(2, '0')}:${match[2]} ${match[3]}',
+//     );
+//   }
+
+//   int parseDuration(String duration) {
+//     final regex = RegExp(r'(\d+)h (\d+)m');
+//     final match = regex.firstMatch(duration);
+
+//     if (match != null) {
+//       final hours = int.parse(match.group(1)!);
+//       final minutes = int.parse(match.group(2)!);
+//       return hours * 60 + minutes;
+//     }
+
+//     return 0; // Default to 0 if parsing fails
+//   }
+
+//   void _generateTimeSlots(int serviceDurationInMinutes) {
+//     if (_startTime != null && _endTime != null) {
+//       DateTime currentTime = _startTime!;
+//       _categorizedTimeSlots.forEach((key, value) => value.clear());
+
+//       while (currentTime.isBefore(_endTime!)) {
+//         final slotEndTime =
+//             currentTime.add(Duration(minutes: serviceDurationInMinutes));
+
+//         String formattedTime = DateFormat('hh:mm a').format(currentTime);
+
+//         if (currentTime.hour < 12) {
+//           _categorizedTimeSlots['Morning']!.add(formattedTime);
+//         } else if (currentTime.hour < 17) {
+//           _categorizedTimeSlots['Afternoon']!.add(formattedTime);
+//         } else if (currentTime.hour < 21) {
+//           _categorizedTimeSlots['Evening']!.add(formattedTime);
+//         } else {
+//           _categorizedTimeSlots['Night']!.add(formattedTime);
+//         }
+
+//         currentTime =
+//             currentTime.add(Duration(minutes: 30)); // Adjust as needed
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final provider = Provider.of<AppProvider>(context);
+//     final serviceBookingDuration = provider.getServiceBookingDuration;
+//     final serviceDurationInMinutes = parseDuration(serviceBookingDuration);
+
+//     _generateTimeSlots(serviceDurationInMinutes); // Generate time slots
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Select Booking Date & Time'),
+//       ),
+//       body: SingleChildScrollView(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text(
+//               'Select a Date:',
+//               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+//             ),
+//             SizedBox(height: Dimensions.dimenisonNo12),
+//             CustomCalendar(
+//               salonModel: widget.salonModel,
+//               controller: _dateController,
+//             ),
+//             SizedBox(height: Dimensions.dimenisonNo16),
+//             TextField(
+//               controller: _dateController,
+//               readOnly: true,
+//               decoration: InputDecoration(
+//                 labelText: 'Selected Date',
+//                 border: OutlineInputBorder(),
+//                 contentPadding: EdgeInsets.symmetric(
+//                   horizontal: Dimensions.dimenisonNo12,
+//                   vertical: Dimensions.dimenisonNo12,
+//                 ),
+//               ),
+//             ),
+//             SizedBox(height: 16),
+//             _buildTimeSlotsSection('Morning'),
+//             _buildTimeSlotsSection('Afternoon'),
+//             _buildTimeSlotsSection('Evening'),
+//             _buildTimeSlotsSection('Night'),
+//             SizedBox(height: 16),
+//             TextField(
+//               controller: _timeController,
+//               readOnly: true,
+//               decoration: InputDecoration(
+//                 labelText: 'Selected Time Slot',
+//                 border: OutlineInputBorder(),
+//                 contentPadding: EdgeInsets.all(12),
+//               ),
+//             ),
+//             SizedBox(height: 16),
+//             if (_selectedTimeSlot != null)
+//               Text(
+//                 'Service Time:',
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//             if (_selectedTimeSlot != null) ...[
+//               SizedBox(height: 8),
+//               Text(
+//                 'Start: $_selectedTimeSlot',
+//                 style: TextStyle(fontSize: 16),
+//               ),
+//               Text(
+//                 'End: ${DateFormat('hh:mm a').format(DateFormat('hh:mm a').parse(_selectedTimeSlot!).add(Duration(minutes: serviceDurationInMinutes)))}',
+//                 style: TextStyle(fontSize: 16),
+//               ),
+//               SizedBox(height: 16),
+//             ],
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: Padding(
+//         padding: EdgeInsets.all(16),
+//         child: ElevatedButton(
+//           onPressed: () {
+//             if (_dateController.text.isEmpty || _timeController.text.isEmpty) {
+//               ScaffoldMessenger.of(context).showSnackBar(
+//                 SnackBar(
+//                   content:
+//                       Text('Please select a date and time for the booking.'),
+//                 ),
+//               );
+//             } else {
+//               // Handle booking confirmation
+//               // Navigate to the next screen or perform any other actions
+//             }
+//           },
+//           style: ElevatedButton.styleFrom(
+//             primary: Colors.blue,
+//             padding: EdgeInsets.symmetric(vertical: 16),
+//           ),
+//           child: Text('Confirm Booking'),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildTimeSlotsSection(String section) {
+//     final provider = Provider.of<AppProvider>(context);
+
+//     final timeSlots = _categorizedTimeSlots[section] ?? [];
+
+//     if (timeSlots.isEmpty) return Container();
+
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text(
+//           section,
+//           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+//         ),
+//         SizedBox(height: 16),
+//         Container(
+//           color: Colors.white,
+//           child: GridView.builder(
+//             shrinkWrap: true,
+//             physics: NeverScrollableScrollPhysics(),
+//             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//               crossAxisCount: 3,
+//               childAspectRatio: 2.5,
+//               crossAxisSpacing: 10,
+//               mainAxisSpacing: 10,
+//             ),
+//             itemCount: timeSlots.length,
+//             itemBuilder: (context, index) {
+//               final timeSlot = timeSlots[index];
+//               final DateTime slotStartTime =
+//                   DateFormat('hh:mm a').parse(timeSlot);
+//               final DateTime slotEndTime = slotStartTime.add(Duration(
+//                   minutes: parseDuration(provider.getServiceBookingDuration)));
+
+//               bool isWithinDuration = slotEndTime.isBefore(_endTime!);
+
+//               return ElevatedButton(
+//                 style: ElevatedButton.styleFrom(
+//                   primary: _selectedTimeSlot == timeSlot
+//                       ? Colors.blue
+//                       : isWithinDuration
+//                           ? Colors.green
+//                           : Colors.white,
+//                   onPrimary: _selectedTimeSlot == timeSlot
+//                       ? Colors.white
+//                       : Colors.black,
+//                   side: BorderSide(color: Colors.black),
+//                 ),
+//                 onPressed: isWithinDuration
+//                     ? () {
+//                         if (slotEndTime.isAfter(_endTime!)) {
+//                           ScaffoldMessenger.of(context).showSnackBar(
+//                             SnackBar(
+//                               content: Text(
+//                                   'Selected time slot cannot accommodate the full service duration. Please select another time slot.'),
+//                             ),
+//                           );
+//                         } else {
+//                           setState(() {
+//                             _selectedTimeSlot = timeSlot;
+//                             _timeController.text = timeSlot;
+//                           });
+//                         }
+//                       }
+//                     : null,
+//                 child: Text(timeSlot),
+//               );
+//             },
+//           ),
+//         ),
+//         SizedBox(height: 16),
+//       ],
+//     );
+//   }
+// }
+//! above code propert
+//! blow code is with last slop of
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:samay_mvp/features/select_time/screen/select_time_section.dart';
-import 'package:samay_mvp/features/select_time/widget/calender.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
+import 'package:samay_mvp/features/select_time/widget/calender.dart';
+import 'package:samay_mvp/features/select_time/widget/time_tap.dart';
+import 'package:samay_mvp/features/summary/screen/booking_summary.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
+import 'package:samay_mvp/provider/app_provider.dart';
+import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
+import 'package:samay_mvp/widget/custom_button.dart';
+
+import '../../../constants/router.dart';
 
 class SelectBooking extends StatefulWidget {
   final SalonModel salonModel;
 
-  const SelectBooking({Key? key, required this.salonModel}) : super(key: key);
+  const SelectBooking({
+    Key? key,
+    required this.salonModel,
+  }) : super(key: key);
 
   @override
-  State<SelectBooking> createState() => _SelectBookingState();
+  _SelectBookingState createState() => _SelectBookingState();
 }
 
 class _SelectBookingState extends State<SelectBooking> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-  bool _showCalender = false;
-  bool selectTime = false;
+  final TextEditingController _noteController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String? _selectedTimeSlot;
+  String? _serviceEndTime;
+
+  DateTime? _startTime;
+  DateTime? _endTime;
+
+  Map<String, List<String>> _categorizedTimeSlots = {
+    'Morning': [],
+    'Afternoon': [],
+    'Evening': [],
+    'Night': [],
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeTimes();
+  }
+
+  void _initializeTimes() {
+    try {
+      String openTimeString = _normalizeTimeString(widget.salonModel.openTime);
+      String closeTimeString =
+          _normalizeTimeString(widget.salonModel.closeTime);
+
+      _startTime = DateFormat('hh:mm a').parse(openTimeString);
+      _endTime = DateFormat('hh:mm a').parse(closeTimeString);
+    } catch (e) {
+      print('Error parsing time: $e');
+    }
+  }
+
+  String _normalizeTimeString(String timeString) {
+    return timeString.replaceAllMapped(
+      RegExp(r'(\d{1,2}):(\d{2})\s*(AM|PM)'),
+      (match) => '${match[1]?.padLeft(2, '0')}:${match[2]} ${match[3]}',
+    );
+  }
+
+  int parseDuration(String duration) {
+    final regex = RegExp(r'(\d+)h (\d+)m');
+    final match = regex.firstMatch(duration);
+
+    if (match != null) {
+      final hours = int.parse(match.group(1)!);
+      final minutes = int.parse(match.group(2)!);
+      return hours * 60 + minutes;
+    }
+
+    return 0; // Default to 0 if parsing fails
+  }
+
+  void _generateTimeSlots(int serviceDurationInMinutes) {
+    if (_startTime != null && _endTime != null) {
+      DateTime currentTime = _startTime!;
+      _categorizedTimeSlots.forEach((key, value) => value.clear());
+
+      while (currentTime.isBefore(_endTime!)) {
+        final slotEndTime =
+            currentTime.add(Duration(minutes: serviceDurationInMinutes));
+
+        String formattedTime = DateFormat('hh:mm a').format(currentTime);
+
+        if (currentTime.hour < 12) {
+          _categorizedTimeSlots['Morning']!.add(formattedTime);
+        } else if (currentTime.hour < 17) {
+          _categorizedTimeSlots['Afternoon']!.add(formattedTime);
+        } else if (currentTime.hour < 21) {
+          _categorizedTimeSlots['Evening']!.add(formattedTime);
+        } else {
+          _categorizedTimeSlots['Night']!.add(formattedTime);
+        }
+
+        currentTime =
+            currentTime.add(Duration(minutes: 30)); // Adjust as needed
+      }
+
+      // Ensure the last slot includes the closing time
+      String lastSlotFormattedTime = DateFormat('hh:mm a').format(_endTime!);
+      if (_categorizedTimeSlots['Night']!.last != lastSlotFormattedTime) {
+        _categorizedTimeSlots['Night']!.add(lastSlotFormattedTime);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _dateController.dispose();
+    _timeController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AppProvider>(context);
+    final serviceBookingDuration = provider.getServiceBookingDuration;
+    final serviceDurationInMinutes = parseDuration(serviceBookingDuration);
+
+    _generateTimeSlots(serviceDurationInMinutes); // Generate time slots
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFFF3F3F3),
@@ -31,176 +421,278 @@ class _SelectBookingState extends State<SelectBooking> {
         appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
         drawer: const CustomDrawer(),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(Dimensions.dimenisonNo16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Select Your Date',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: Dimensions.dimenisonNo24,
-                    fontFamily: GoogleFonts.roboto().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
+          padding: EdgeInsets.all(Dimensions.dimenisonNo16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select a Date:',
+                style: TextStyle(
+                    fontSize: Dimensions.dimenisonNo22,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: Dimensions.dimenisonNo12),
+              CustomCalendar(
+                salonModel: widget.salonModel,
+                controller: _dateController,
+              ),
+              SizedBox(height: Dimensions.dimenisonNo20),
+              TextField(
+                controller: _dateController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Selected Date',
+                  // border: const OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.dimenisonNo12,
+                    vertical: Dimensions.dimenisonNo12,
                   ),
                 ),
-                SizedBox(height: Dimensions.dimenisonNo16),
-                _showCalender
-                    ? CustomCalender(
-                        salonModel: widget.salonModel,
-                        controller: _timeController)
-                    : SizedBox(),
-                SizedBox(height: Dimensions.dimenisonNo16),
-                SizedBox(
-                  height: Dimensions.dimenisonNo50,
-                  child: TextField(
-                    onTap: () {
-                      setState(() {
-                        _showCalender = !_showCalender;
-                      });
-                    },
-                    controller: _timeController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.dimenisonNo14),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.dimenisonNo14),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.dimenisonNo14),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      hintStyle: TextStyle(
-                        color: const Color(0xFF959595),
-                        fontSize: Dimensions.dimenisonNo16,
-                        fontFamily: GoogleFonts.roboto().fontFamily,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      hintText: 'DD/MM/YY',
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _showCalender = !_showCalender;
-                          });
-                        },
-                        icon: const Icon(Icons.calendar_month_outlined),
-                      ),
+              ),
+
+              SizedBox(height: Dimensions.dimenisonNo16),
+              // _buildTimeSlotsSection('Morning'),
+              // _buildTimeSlotsSection('Afternoon'),
+              // _buildTimeSlotsSection('Evening'),
+              // _buildTimeSlotsSection('Night'),
+              // Inside your build method
+              TimeSlot(
+                section: 'Morning',
+                timeSlots: _categorizedTimeSlots['Morning'] ?? [],
+                selectedTimeSlot: _selectedTimeSlot,
+                serviceDurationInMinutes: serviceDurationInMinutes,
+                endTime: _endTime,
+                onTimeSlotSelected: (selectedSlot) {
+                  setState(() {
+                    _selectedTimeSlot = selectedSlot;
+                    _timeController.text = selectedSlot;
+                  });
+                },
+              ),
+              TimeSlot(
+                section: 'Afternoon',
+                timeSlots: _categorizedTimeSlots['Afternoon'] ?? [],
+                selectedTimeSlot: _selectedTimeSlot,
+                serviceDurationInMinutes: serviceDurationInMinutes,
+                endTime: _endTime,
+                onTimeSlotSelected: (selectedSlot) {
+                  setState(() {
+                    _selectedTimeSlot = selectedSlot;
+                    _timeController.text = selectedSlot;
+                  });
+                },
+              ),
+              TimeSlot(
+                section: 'Evening',
+                timeSlots: _categorizedTimeSlots['Evening'] ?? [],
+                selectedTimeSlot: _selectedTimeSlot,
+                serviceDurationInMinutes: serviceDurationInMinutes,
+                endTime: _endTime,
+                onTimeSlotSelected: (selectedSlot) {
+                  setState(() {
+                    _selectedTimeSlot = selectedSlot;
+                    _timeController.text = selectedSlot;
+                  });
+                },
+              ),
+              TimeSlot(
+                section: 'Night',
+                timeSlots: _categorizedTimeSlots['Night'] ?? [],
+                selectedTimeSlot: _selectedTimeSlot,
+                serviceDurationInMinutes: serviceDurationInMinutes,
+                endTime: _endTime,
+                onTimeSlotSelected: (selectedSlot) {
+                  setState(() {
+                    _selectedTimeSlot = selectedSlot;
+                    _timeController.text = selectedSlot;
+                  });
+                },
+              ),
+              Text(
+                'Add Note',
+                style: TextStyle(
+                  fontSize: Dimensions.dimenisonNo18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              TextFormField(
+                controller: _noteController,
+                maxLines: 3,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  hintText: "Write a note for stylist.",
+                  errorBorder: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(Dimensions.dimenisonNo16),
+                    borderSide: const BorderSide(
+                      color: Colors.red,
+                    ),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: Dimensions.dimenisonNo16,
-                ),
-                Text(
-                  'Select Your Time',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: Dimensions.dimenisonNo24,
-                    fontFamily: GoogleFonts.roboto().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-                SizedBox(height: Dimensions.dimenisonNo10),
+              ),
 
-                // _buildTimeSlots(),
-              ],
-            ),
+              SizedBox(height: Dimensions.dimenisonNo16),
+
+              if (_dateController != null)
+                Container(
+                  padding: EdgeInsets.all(Dimensions.dimenisonNo10),
+                  decoration: BoxDecoration(
+                    color: AppColor.grey,
+                    borderRadius:
+                        BorderRadius.circular(Dimensions.dimenisonNo10),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: Dimensions.dimenisonNo16),
+                        if (_selectedTimeSlot != null)
+                          Text(
+                            'Service Time:',
+                            style: TextStyle(
+                              fontSize: Dimensions.dimenisonNo22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        Divider(
+                          color: Colors.white,
+                        ),
+                        if (_selectedTimeSlot != null) ...[
+                          SizedBox(height: Dimensions.dimenisonNo10),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment Date',
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.90,
+                                ),
+                              ),
+                              Spacer(),
+                              Text(
+                                _dateController.text,
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.dimenisonNo10),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment Start Time',
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.90,
+                                ),
+                              ),
+                              Spacer(),
+                              Text(
+                                '$_selectedTimeSlot',
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.90,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.dimenisonNo10),
+                          Row(
+                            children: [
+                              Text(
+                                'Appointment End Time',
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.90,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                DateFormat('hh:mm a').format(
+                                    DateFormat('hh:mm a')
+                                        .parse(_selectedTimeSlot!)
+                                        .add(Duration(
+                                            minutes:
+                                                serviceDurationInMinutes))),
+                                style: TextStyle(
+                                  fontSize: Dimensions.dimenisonNo18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.90,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.dimenisonNo16),
+                        ],
+                      ]),
+                ),
+              SizedBox(
+                height: Dimensions.dimenisonNo16,
+              ),
+              SizedBox(
+                height: Dimensions.dimenisonNo55,
+                width: double.infinity,
+                child: CustomButtom(
+                  text: "Confirm Appointment",
+                  ontap: () {
+                    bool isNoteAdd = false;
+                    setState(() {
+                      _serviceEndTime = DateFormat('hh:mm a').format(
+                          DateFormat('hh:mm a').parse(_selectedTimeSlot!).add(
+                              Duration(minutes: serviceDurationInMinutes)));
+                      isNoteAdd =
+                          _noteController.text.isNotEmpty ? true : false;
+                    });
+                    if (_dateController.text.isEmpty ||
+                        _timeController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Please select a date, time, not for the Appointment.'),
+                        ),
+                      );
+                    } else {
+                      Routes.instance.push(
+                          widget: SummaryScreen(
+                            salonModel: widget.salonModel,
+                            serviceDate: _dateController.text,
+                            serviceStartTime: _selectedTimeSlot!,
+                            serviceEndTime: _serviceEndTime!,
+                            userNote: _noteController.text.isNotEmpty
+                                ? _noteController.text
+                                : '',
+                            isNodeAdd: isNoteAdd,
+                          ),
+                          context: context);
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
-  // // Function to build time slots based on openTime and closeTime
-  // Widget _buildTimeSlots() {
-  //   final DateFormat timeFormat = DateFormat('hh:mm a');
-  //   DateTime openTime, closeTime;
-
-  //   // Normalize time strings (remove extra spaces and ensure format consistency)
-  //   final openTimeString = widget.salonModel.openTime.replaceAll(' ', '');
-  //   final closeTimeString = widget.salonModel.closeTime.replaceAll(' ', '');
-
-  //   try {
-  //     openTime = timeFormat.parse(_normalizeTimeString(openTimeString));
-  //     closeTime = timeFormat.parse(_normalizeTimeString(closeTimeString));
-  //   } catch (e) {
-  //     // Handle parsing error, perhaps show a message to the user
-  //     print('Error parsing time: $e');
-  //     return Center(child: Text('Error parsing time data'));
-  //   }
-
-  //   List<Widget> timeSlots = [];
-  //   DateTime currentTime = openTime;
-  //   while (currentTime.isBefore(closeTime)) {
-  //     timeSlots.add(
-  //       SizedBox(
-  //         height: Dimensions.dimenisonNo70,
-  //         child: ElevatedButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               _timeController.text = timeFormat.format(currentTime);
-  //             });
-  //             setState(() {
-  //               selectTime = !selectTime;
-  //             });
-  //           },
-  //           style: ElevatedButton.styleFrom(
-  //             padding: EdgeInsets.symmetric(
-  //               horizontal: Dimensions.dimenisonNo15,
-  //             ),
-  //             backgroundColor: selectTime
-  //                 ? AppColor.buttonColor
-  //                 : Color.fromARGB(255, 218, 216, 216),
-  //             foregroundColor: Colors.white,
-  //             side: const BorderSide(
-  //               width: 3,
-  //               color: Color(0x3F000000),
-  //             ),
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //           ),
-  //           child: Text(
-  //             timeFormat.format(currentTime),
-  //             style: TextStyle(
-  //               color: selectTime ? Colors.white : Colors.black,
-  //               fontSize: Dimensions.dimenisonNo20,
-  //               fontFamily: GoogleFonts.roboto().fontFamily,
-  //               fontWeight: FontWeight.bold,
-  //               letterSpacing: 1,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //     currentTime = currentTime.add(Duration(minutes: 30));
-  //   }
-
-  //   return Center(
-  //     child: Wrap(
-  //       spacing:
-  //           Dimensions.dimenisonNo16, // Horizontal spacing between time slots
-  //       runSpacing: Dimensions.dimenisonNo20, // Vertical spacing between lines
-  //       children: timeSlots,
-  //     ),
-  //   );
-  // }
-
-  // // Helper function to normalize time strings
-  // String _normalizeTimeString(String timeString) {
-  //   // Ensure there is a space before AM/PM and remove any extra spaces
-  //   return timeString.replaceAllMapped(
-  //     RegExp(r'(\d+)(AM|PM)'),
-  //     (match) => '${match[1]} ${match[2]}',
-  //   );
-  // }
 }

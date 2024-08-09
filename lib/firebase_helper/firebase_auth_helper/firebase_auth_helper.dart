@@ -39,7 +39,8 @@ class FirebaseAuthHelper {
           id: uidOfCreateUser,
           name: name,
           phone: int.parse(phone),
-          image: null,
+          image:
+              'https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png',
           email: email,
           password: password);
 

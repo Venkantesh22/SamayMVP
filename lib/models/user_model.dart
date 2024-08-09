@@ -17,7 +17,7 @@ class UserModel {
   String id;
   String name;
   int phone;
-  String? image;
+  String image;
   String email;
   String password;
 
@@ -40,7 +40,6 @@ class UserModel {
       };
 
   UserModel copyWith({
-    String? id,
     String? name,
     int? phone,
     String? image,
@@ -48,7 +47,7 @@ class UserModel {
     String? password,
   }) {
     return UserModel(
-      id: id ?? this.id,
+      id: id,
       name: name ?? this.name,
       phone: phone ?? this.phone,
       image: image ?? this.image,

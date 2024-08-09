@@ -3,6 +3,7 @@ import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_fire
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/service_model/service_model.dart';
+import 'package:samay_mvp/models/user_model.dart';
 
 class AppProvider with ChangeNotifier {
   final FirebaseFirestoreHelper _firebaseFirestoreHelper =
@@ -10,16 +11,22 @@ class AppProvider with ChangeNotifier {
 
   SalonModel? _salonModel;
   CategoryModel? _categoryModel;
+  UserModel? _userModel;
+
   List<CategoryModel> _categoryList = [];
   List<ServiceModel> _watchList = [];
+
   double _subTotal = 0.0;
+  double _finalTotal = 0.0;
   String _serviceBookingDuration = "0h 0m";
 
   SalonModel? get getSalonInformation => _salonModel;
   CategoryModel? get getCategoryInformation => _categoryModel;
+  UserModel? get getUserInfornation => _userModel;
   List<CategoryModel> get getcategoryList => _categoryList;
   List<ServiceModel> get getWatchList => _watchList;
   double get getSubTotal => _subTotal;
+  double get getfinalTotal => _finalTotal;
   String get getServiceBookingDuration => _serviceBookingDuration;
 
 //add service to Watch List
@@ -38,6 +45,8 @@ class AppProvider with ChangeNotifier {
   void calculateSubTotal() {
     _subTotal = _watchList.fold(0.0, (sum, item) => sum + item.price);
     print("subTotal :- $_subTotal");
+    _finalTotal = _subTotal + 20;
+    print("finalTotal :- $_finalTotal");
     notifyListeners();
   }
 
@@ -111,6 +120,12 @@ class AppProvider with ChangeNotifier {
     } catch (e) {
       print("Error fetching category information: $e");
     }
+  }
+
+//Fetch User information from Firebase
+  void getUserInfoFirebasePro() async {
+    _userModel = await _firebaseFirestoreHelper.getUserInforFB();
+    notifyListeners();
   }
 
 // Fetch watch list services as a stream

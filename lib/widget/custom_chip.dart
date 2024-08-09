@@ -16,17 +16,22 @@ class CustomChip extends StatefulWidget {
 class _CustomChipState extends State<CustomChip> {
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      backgroundColor: const Color.fromARGB(255, 184, 182, 182),
-      label: Text(
-        widget.text,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: Dimensions.dimenisonNo16,
-          fontFamily: GoogleFonts.roboto().fontFamily,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1,
+    return SizedBox(
+      height: Dimensions.dimenisonNo40,
+      child: Chip(
+        labelPadding: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.dimenisonNo10),
+        backgroundColor: const Color.fromARGB(255, 184, 182, 182),
+        label: Text(
+          widget.text,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Dimensions.dimenisonNo16,
+            fontFamily: GoogleFonts.roboto().fontFamily,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1,
+          ),
         ),
       ),
     );

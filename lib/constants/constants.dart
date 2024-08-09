@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:samay_mvp/utility/dimension.dart';
+import 'package:samay_mvp/widget/custom_button.dart';
 
 void showMessage(String message) {
   Fluttertoast.showToast(
@@ -12,7 +13,11 @@ void showMessage(String message) {
 }
 
 // Function to show a message when a holiday is selected
-void showMeassgeAlertDialog(BuildContext context, String title, message) {
+void showMeassgeAlertDialog(
+  BuildContext context,
+  String title,
+  message,
+) {
   showDialog(
     context: context,
     builder: (context) {
@@ -22,9 +27,60 @@ void showMeassgeAlertDialog(BuildContext context, String title, message) {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.pop(context);
+            },
             child: const Text('OK'),
           ),
+        ],
+      );
+    },
+  );
+}
+
+// Function to show a message Delete
+void showDeleteAlertDialog(
+    BuildContext context, String title, message, VoidCallback ontap) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        // content:  Text('The salon is closed on the selected date.'),
+        content: Text(message),
+        actions: [
+          SizedBox(
+            height: Dimensions.dimenisonNo20,
+          ),
+          SizedBox(
+            height: Dimensions.dimenisonNo40,
+            child: Row(
+              children: [
+                CustomButtom(
+                  text: "No",
+                  ontap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Spacer(),
+                CustomButtom(text: "Yes", ontap: ontap)
+              ],
+            ),
+          )
+          // TextButton(
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          //   child: const Text('No'),
+          // ),
+
+          // SizedBox(
+          //   width: Dimensions.dimenisonNo150,
+          // ),
+          // TextButton(
+          //   onPressed: ontap,
+          //   child: const Text('Yes'),
+          // ),
         ],
       );
     },

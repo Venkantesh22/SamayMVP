@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 
@@ -10,10 +12,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppProvider appProvider = Provider.of<AppProvider>(context);
     return AppBar(
       backgroundColor: AppColor.mainColor,
       title: Center(
         child: Text(
+          // appProvider.getUserInfornation!.email,
           'SAMAY',
           style: TextStyle(
             color: Colors.white,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/features/winder_profile/screen/winder_service_screen.dart';
@@ -40,7 +39,6 @@ class _WinderProfileScreenState extends State<WinderProfileScreen> {
         widget.salonModel.adminId, widget.salonModel.id);
     setState(() {
       isLoading = true;
-      GlobalVariable.adminId = widget.salonModel.adminId;
     });
   }
 
@@ -136,8 +134,6 @@ class _WinderProfileScreenState extends State<WinderProfileScreen> {
                   serviceTextColor: AppColor.buttonColor,
                   detailOnTap: () {},
                   serviceOnTap: () {
-                    GlobalVariable.adminId = widget.salonModel.adminId;
-                    print("Admin Id ${GlobalVariable.adminId}");
                     Navigator.push(
                       context,
                       PageRouteBuilder(
