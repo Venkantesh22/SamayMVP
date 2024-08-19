@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:samay_mvp/utility/dimension.dart';
 
 class CustomText extends StatelessWidget {
   final String firstText;
   final String lastText;
   final bool showicon;
-  IconData? icon;
+  final IconData? icon;
 
-  CustomText({
+  const CustomText({
     Key? key,
     required this.firstText,
     required this.lastText,
@@ -51,26 +50,5 @@ class CustomText extends StatelessWidget {
         ],
       ),
     );
-    //   SizedBox(
-    // height: 30,
-    // child: ListTile(
-    //   title: Text(
-    //     firstText,
-    //     style: TextStyle(
-    //       fontSize: Dimensions.dimenisonNo16,
-    //       // fontWeight: FontWeight.w500,
-    //       letterSpacing: 0.80,
-    //     ),
-    //   ),
-    //   trailing: Text(
-    //     lastText,
-    //     style: TextStyle(
-    //       fontSize: Dimensions.dimenisonNo16,
-    //       // fontWeight: FontWeight.w500,
-    //       letterSpacing: 0.80,
-    //     ),
-    //   ),
-    // ),
-    // );
   }
 }

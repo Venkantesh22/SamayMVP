@@ -4,6 +4,7 @@ import 'package:samay_mvp/models/user_model.dart';
 
 class OrderModel {
   final String orderId;
+  final int appointmentNo;
   final List<ServiceModel> services;
   final String status;
   final double totalPrice;
@@ -20,6 +21,7 @@ class OrderModel {
 
   OrderModel({
     required this.orderId,
+    required this.appointmentNo,
     required this.services,
     required this.status,
     required this.totalPrice,
@@ -37,21 +39,31 @@ class OrderModel {
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
-      orderId: json['orderId'],
+      orderId: json['orderId'] ?? '', // Default to empty string if null
+      appointmentNo: (json['appointmentNo'] ?? '').toInt(),
       services: (json['services'] as List)
           .map((item) => ServiceModel.fromJson(item))
           .toList(),
-      status: json['status'],
-      totalPrice: json['totalPrice'],
-      payment: json['payment'],
-      serviceDuration: json['serviceDuration'],
-      serviceDate: json['serviceDate'],
-      serviceStartTime: json['serviceStartTime'],
-      serviceEndTime: json['serviceEndTime'],
-      userNote: json['userNote'],
-      serviceBookDate: json['serviceBookDate'],
-      serviceBookTime: json['serviceBookTime'],
-      salonModel: SalonModel.fromJson(json['salonModel']),
+      status: json['status'] ?? 'Pending', // Default to 'Pending' if null
+      totalPrice:
+          (json['totalPrice'] ?? 0.0).toDouble(), // Default to 0.0 if null
+      payment: json['payment'] ?? 'Unknown', // Default to 'Unknown' if null
+      serviceDuration:
+          json['serviceDuration'] ?? '0h 0m', // Default to '0h 0m' if null
+      serviceDate: json['serviceDate'] ??
+          'Unknown Date', // Default to 'Unknown Date' if null
+      serviceStartTime: json['serviceStartTime'] ??
+          'Unknown Start Time', // Default to 'Unknown Start Time' if null
+      serviceEndTime: json['serviceEndTime'] ??
+          'Unknown End Time', // Default to 'Unknown End Time' if null
+      userNote: json['userNote'] ?? '', // Default to empty string if null
+      serviceBookDate: json['serviceBookDate'] ??
+          'Unknown Booking Date', // Default to 'Unknown Booking Date' if null
+      serviceBookTime: json['serviceBookTime'] ??
+          'Unknown Booking Time', // Default to 'Unknown Booking Time' if null
+      salonModel: SalonModel.fromJson(
+        json['salonModel'],
+      ),
       userModel: UserModel.fromJson(json['userModel']),
     );
   }
@@ -59,6 +71,7 @@ class OrderModel {
   Map<String, dynamic> toJson() {
     return {
       'orderId': orderId,
+      'appointmentNo': appointmentNo,
       'services': services.map((e) => e.toJson()).toList(),
       'status': status,
       'totalPrice': totalPrice,
@@ -76,7 +89,7 @@ class OrderModel {
   }
 
   OrderModel copyWith({
-    String? orderId,
+    int? appointmentNo,
     List<ServiceModel>? services,
     String? status,
     double? totalPrice,
@@ -88,10 +101,10 @@ class OrderModel {
     String? userNote,
     String? serviceBookDate,
     String? serviceBookTime,
-    SalonModel? salonModel,
   }) {
     return OrderModel(
-      orderId: orderId ?? this.orderId,
+      orderId: orderId,
+      appointmentNo: appointmentNo ?? this.appointmentNo,
       services: services ?? this.services,
       status: status ?? this.status,
       totalPrice: totalPrice ?? this.totalPrice,
@@ -103,7 +116,7 @@ class OrderModel {
       userNote: userNote ?? this.userNote,
       serviceBookDate: serviceBookDate ?? this.serviceBookDate,
       serviceBookTime: serviceBookTime ?? this.serviceBookTime,
-      salonModel: salonModel ?? this.salonModel,
+      salonModel: salonModel,
       userModel: userModel,
     );
   }

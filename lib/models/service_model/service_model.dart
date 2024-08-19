@@ -24,10 +24,8 @@ class ServiceModel {
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
       id: json['id'],
-      // salonId: 'klsfjlk',
       salonId: json['salonId'],
       categoryId: json['categoryId'],
-      // categoryName: 'categoryName',
       categoryName: json['categoryName'],
       servicesName: json['servicesName'],
       price: (json['price'] as num?)?.toDouble() ??

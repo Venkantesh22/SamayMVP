@@ -47,15 +47,33 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: Text(
-                      'Appointment ID\n${widget.orderModel.orderId}',
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.6),
-                        fontSize: Dimensions.dimenisonNo16,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Appointment ID\n${widget.orderModel.orderId}',
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.6),
+                            fontSize: Dimensions.dimenisonNo16,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(
+                          height: Dimensions.dimenisonNo5,
+                        ),
+                        Text(
+                          'Appointment NO : 000${widget.orderModel.appointmentNo}',
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.6),
+                            fontSize: Dimensions.dimenisonNo16,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Spacer(),

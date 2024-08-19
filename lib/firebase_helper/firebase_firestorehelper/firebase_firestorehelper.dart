@@ -25,6 +25,25 @@ class FirebaseFirestoreHelper {
     return salonList;
   }
 
+  // Fetch Salon information by id
+  Future<Map<String, dynamic>?> getSingleSalonInfoFB(
+      String adminId, String salonId) async {
+    try {
+      DocumentSnapshot doc = await _firebaseFirestore
+          .collection("admins")
+          .doc(adminId)
+          .collection("salon")
+          .doc(salonId)
+          .get();
+      if (doc.exists) {
+        return doc.data() as Map<String, dynamic>;
+      }
+    } catch (e) {
+      showMessage('Error fetching admin info: ${e.toString()}');
+    }
+    return null;
+  }
+
 //Fetch List of Category data
   Future<List<CategoryModel>> getCategoryListFB(
       String salonId, String adminId) async {
@@ -45,42 +64,6 @@ class FirebaseFirestoreHelper {
       showMessage("Error ${e.toString()}");
       rethrow;
     }
-  }
-
-  //Fetch List of Service data
-  Future<List<ServiceModel>> getServicesListFB(
-      String salonId, String adminId, String categoryId) async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firebaseFirestore
-        .collection("admins")
-        .doc(adminId)
-        .collection("salon")
-        .doc(salonId)
-        .collection("category")
-        .doc(categoryId)
-        .collection('service')
-        .get();
-    List<ServiceModel> serviceList =
-        querySnapshot.docs.map((e) => ServiceModel.fromJson(e.data())).toList();
-    return serviceList;
-  }
-
-  // Fetch Salon information by id
-  Future<Map<String, dynamic>?> getSingleSalonInfoFB(
-      String adminId, String salonId) async {
-    try {
-      DocumentSnapshot doc = await _firebaseFirestore
-          .collection("admins")
-          .doc(adminId)
-          .collection("salon")
-          .doc(salonId)
-          .get();
-      if (doc.exists) {
-        return doc.data() as Map<String, dynamic>;
-      }
-    } catch (e) {
-      showMessage('Error fetching admin info: ${e.toString()}');
-    }
-    return null;
   }
 
 // Fetch category informaton by id
@@ -104,6 +87,23 @@ class FirebaseFirestoreHelper {
     return null;
   }
 
+  //Fetch List of Service data
+  Future<List<ServiceModel>> getServicesListFB(
+      String salonId, String adminId, String categoryId) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firebaseFirestore
+        .collection("admins")
+        .doc(adminId)
+        .collection("salon")
+        .doc(salonId)
+        .collection("category")
+        .doc(categoryId)
+        .collection('service')
+        .get();
+    List<ServiceModel> serviceList =
+        querySnapshot.docs.map((e) => ServiceModel.fromJson(e.data())).toList();
+    return serviceList;
+  }
+
   // Future<List<AdminModel>> getAdminList() async {
   //   QuerySnapshot<Map<String, dynamic>> querySnapshot =
   //       await _firebaseFirestore.collection("admins").get();
@@ -112,8 +112,9 @@ class FirebaseFirestoreHelper {
   //   return adminList;
   // }
 
-  // Add upload Appointment to Firebase
+  // Add new upload Appointment to Firebase
   Future<bool> uploadAppointmentInforFB(
+    int appointmentNo,
     List<ServiceModel> servicelist,
     SalonModel salonModel,
     UserModel userModel,
@@ -167,6 +168,7 @@ class FirebaseFirestoreHelper {
 
       documentReference.set({
         "orderId": documentReference.id,
+        "appointmentNo": appointmentNo,
         "salonModel": salonModel.toJson(), // Convert SalonModel to JSON
         "userModel": userModel.toJson(), // Convert SalonModel to JSON
         "services": servicelist.map((e) => e.toJson()).toList(),
@@ -241,31 +243,4 @@ class FirebaseFirestoreHelper {
 
     return UserModel.fromJson(querySnapshot.data()!);
   }
-// //Get WatchList for Firebase
-  // Stream<List<WatchListServiceModel>> getWatchListServiceFB() {
-  //   String? userId = _user.currentUser?.uid;
-  //   return _firebaseFirestore
-  //       .collection("users")
-  //       .doc(userId)
-  //       .collection('watchList')
-  //       .snapshots()
-  //       .map((snapshot) => snapshot.docs
-  //           .map((doc) => WatchListServiceModel.fromJson(doc.data()))
-  //           .toList());
-  // }
-// delete service for WatchList
-  // Future<bool> deleteServiceForWatchListFB(String serviceId) async {
-  //   try {
-  //     String? userId = _user.currentUser?.uid;
-  //     await _firebaseFirestore
-  //         .collection("users")
-  //         .doc(userId)
-  //         .collection('watchList')
-  //         .doc(serviceId)
-  //         .delete();
-  //     return true;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +11,7 @@ import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/features/home/screen/homescreen.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
+import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/samay_fb.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
@@ -174,8 +177,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 text: "Pay & Confime",
                 ontap: () async {
                   showLoaderDialog(context);
+                  int appointmentNO =
+                      await SamayFB.instance.incrementSalonAppointmentNo();
+
+                  // ignore: use_build_context_synchronously
                   bool value = await FirebaseFirestoreHelper.instance
                       .uploadAppointmentInforFB(
+                    appointmentNO,
                     appProvider.getWatchList,
                     widget.salonModel,
                     appProvider.getUserInfornation!,
@@ -190,6 +198,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     getCurrentTime(),
                     context,
                   );
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context, rootNavigator: true).pop();
                   if (value) {
                     showLoaderDialog(context);
@@ -238,6 +247,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                     ),
                                     Text(
                                       'Appointment ID : ${GlobalVariable.appointmentID}',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.dimenisonNo14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Appointment No : ${GlobalVariable.appointmentNO}',
                                       style: TextStyle(
                                         fontSize: Dimensions.dimenisonNo14,
                                         fontWeight: FontWeight.w500,
