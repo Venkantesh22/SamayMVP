@@ -7,5 +7,5 @@ class AppColor {
   static const buttonColor = Color(0xFF2E6A50);
   static const pendingColor = Color(0xFFF35A18);
   static const serviceTapTextColor = Color.fromARGB(255, 52, 52, 52);
-  static const grey = Color.fromARGB(255, 207, 205, 205);
+  static const grey = Color.fromARGB(255, 149, 147, 147);
 }

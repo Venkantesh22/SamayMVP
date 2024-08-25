@@ -3,7 +3,7 @@ import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_fire
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/service_model/service_model.dart';
-import 'package:samay_mvp/models/user_model.dart';
+import 'package:samay_mvp/models/user_model/user_model.dart';
 
 class AppProvider with ChangeNotifier {
   final FirebaseFirestoreHelper _firebaseFirestoreHelper =
@@ -127,30 +127,4 @@ class AppProvider with ChangeNotifier {
     _userModel = await _firebaseFirestoreHelper.getUserInforFB();
     notifyListeners();
   }
-
-// Fetch watch list services as a stream
-  // Stream<List<WatchListServiceModel>> getWatchListStream() {
-  //   return _firebaseFirestoreHelper.getWatchListServiceFB();
-  // }
-  // Fetch watch list services and update _watchServiceList
-  // Future<void> fetchWatchList() async {
-  //   getWatchListStream().listen((data) {
-  //     _watchServiceList = data;
-  //     notifyListeners();
-  //   });
-  // }
-  // // Delete a service from the watch list
-  // Future<void> deleteServiceForWatchListPro(
-  //     WatchListServiceModel watchListServiceModel) async {
-  //   try {
-  //     bool isDeleted = await _firebaseFirestoreHelper
-  //         .deleteServiceForWatchListFB(watchListServiceModel.id);
-  //     if (isDeleted) {
-  //       _watchServiceList.remove(watchListServiceModel);
-  //       notifyListeners();
-  //     }
-  //   } catch (e) {
-  //     print("Error deleting service from watch list: $e");
-  //   }
-  // }
 }

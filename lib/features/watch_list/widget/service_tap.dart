@@ -267,15 +267,31 @@ class _SingleServiceTapState extends State<SingleServiceTap> {
               children: [
                 SizedBox(
                   width: Dimensions.dimenisonNo200,
-                  child: Text(
-                    '▪️ ${widget.serviceModel.servicesName}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: Dimensions.dimenisonNo20,
-                      fontFamily: GoogleFonts.roboto().fontFamily,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '▪️ ${widget.serviceModel.servicesName}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Dimensions.dimenisonNo20,
+                          fontFamily: GoogleFonts.roboto().fontFamily,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.dimenisonNo5),
+                      Text(
+                        "Service code : ${widget.serviceModel.serviceCode}",
+                        style: TextStyle(
+                          color: AppColor.grey,
+                          fontSize: Dimensions.dimenisonNo15,
+                          fontFamily: GoogleFonts.lato().fontFamily,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Spacer(),

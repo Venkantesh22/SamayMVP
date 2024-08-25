@@ -9,7 +9,8 @@ import 'package:samay_mvp/features/appointment_detail/widget/custom_text.dart';
 import 'package:samay_mvp/features/appointment_detail/widget/state_text.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
-import 'package:samay_mvp/models/user_order/user_order_model.dart';
+import 'package:samay_mvp/models/order/user_order_model.dart';
+import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 import 'package:samay_mvp/widget/custom_chip.dart';
@@ -116,19 +117,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       : SizedBox(),
                 ],
               ),
-              SizedBox(height: Dimensions.dimenisonNo5),
-              CustomText(
-                firstText: "Book Date:",
-                lastText: widget.orderModel.serviceBookDate,
-                // showicon: true,
-                // icon: Icons.watch_later_outlined,
-              ),
-              CustomText(
-                firstText: "Book Time:",
-                lastText: widget.orderModel.serviceBookTime,
-                // showicon: true,
-                // icon: Icons.watch_later_outlined,
-              ),
               Padding(
                 padding:
                     EdgeInsets.symmetric(vertical: Dimensions.dimenisonNo8),
@@ -198,7 +186,9 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                 padding:
                     EdgeInsets.symmetric(horizontal: Dimensions.dimenisonNo10),
                 child: Text(
-                  widget.orderModel.userNote,
+                  widget.orderModel.userNote.length > 2
+                      ? widget.orderModel.userNote
+                      : "No user note",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: Dimensions.dimenisonNo16,
@@ -237,14 +227,30 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                '▪️ ${singleService.servicesName}',
-                                style: GoogleFonts.roboto(
-                                  color: Colors.black,
-                                  fontSize: Dimensions.dimenisonNo20,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '▪️ ${singleService.servicesName}',
+                                    style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontSize: Dimensions.dimenisonNo20,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                  SizedBox(height: Dimensions.dimenisonNo5),
+                                  Text(
+                                    "Service code : ${singleService.serviceCode}",
+                                    style: TextStyle(
+                                      color: AppColor.grey,
+                                      fontSize: Dimensions.dimenisonNo15,
+                                      fontFamily: GoogleFonts.lato().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             CustomChip(text: singleService.categoryName),
@@ -444,6 +450,50 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: Dimensions.dimenisonNo8),
+                    child: const CustomDotttedLine(),
+                  ),
+                  Text(
+                    'Booking Details',
+                    style: TextStyle(
+                      fontSize: Dimensions.dimenisonNo18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.dimenisonNo10),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.orderModel.timeDateList.length,
+                    itemBuilder: (context, index) {
+                      TimeDateModel timeDateModel =
+                          widget.orderModel.timeDateList[index];
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              "Book on  ${widget.orderModel.timeDateList[0].date}  at  ${widget.orderModel.timeDateList[0].time} by ${widget.orderModel.userModel.name}"),
+                          Column(
+                            children: widget.orderModel.timeDateList.length > 1
+                                ? [
+                                    ...widget.orderModel.timeDateList.map(
+                                      (singleTimeDate) {
+                                        return singleTimeDate.updateBy == "User"
+                                            ? Text(
+                                                "update on ${singleTimeDate.date}  at ${singleTimeDate.time} by ${widget.orderModel.userModel.name}")
+                                            : Text(
+                                                "update on ${singleTimeDate.date}  at ${singleTimeDate.time} by ${widget.orderModel.salonModel.name}");
+                                      },
+                                    )
+                                  ]
+                                : [],
+                          )
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

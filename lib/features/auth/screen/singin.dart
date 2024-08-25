@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:samay_mvp/constants/asset_images.dart';
 import 'package:samay_mvp/constants/constants.dart';
+import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/auth/screen/login.dart';
 import 'package:samay_mvp/features/home/screen/homescreen.dart';
@@ -26,6 +27,16 @@ class _SingInState extends State<SingIn> {
   TextEditingController email = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
+
+  @override
+  void dispose() {
+    password.dispose();
+    email.dispose();
+    name.dispose();
+    phone.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

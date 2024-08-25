@@ -1,6 +1,7 @@
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/service_model/service_model.dart';
-import 'package:samay_mvp/models/user_model.dart';
+import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
+import 'package:samay_mvp/models/user_model/user_model.dart';
 
 class OrderModel {
   final String orderId;
@@ -14,10 +15,9 @@ class OrderModel {
   final String serviceStartTime;
   final String serviceEndTime;
   final String userNote;
-  final String serviceBookDate;
-  final String serviceBookTime;
   final SalonModel salonModel;
   final UserModel userModel;
+  final List<TimeDateModel> timeDateList;
 
   OrderModel({
     required this.orderId,
@@ -31,40 +31,33 @@ class OrderModel {
     required this.serviceStartTime,
     required this.serviceEndTime,
     required this.userNote,
-    required this.serviceBookDate,
-    required this.serviceBookTime,
     required this.salonModel,
     required this.userModel,
+    required this.timeDateList,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
-      orderId: json['orderId'] ?? '', // Default to empty string if null
-      appointmentNo: (json['appointmentNo'] ?? '').toInt(),
-      services: (json['services'] as List)
-          .map((item) => ServiceModel.fromJson(item))
-          .toList(),
-      status: json['status'] ?? 'Pending', // Default to 'Pending' if null
-      totalPrice:
-          (json['totalPrice'] ?? 0.0).toDouble(), // Default to 0.0 if null
-      payment: json['payment'] ?? 'Unknown', // Default to 'Unknown' if null
-      serviceDuration:
-          json['serviceDuration'] ?? '0h 0m', // Default to '0h 0m' if null
-      serviceDate: json['serviceDate'] ??
-          'Unknown Date', // Default to 'Unknown Date' if null
-      serviceStartTime: json['serviceStartTime'] ??
-          'Unknown Start Time', // Default to 'Unknown Start Time' if null
-      serviceEndTime: json['serviceEndTime'] ??
-          'Unknown End Time', // Default to 'Unknown End Time' if null
-      userNote: json['userNote'] ?? '', // Default to empty string if null
-      serviceBookDate: json['serviceBookDate'] ??
-          'Unknown Booking Date', // Default to 'Unknown Booking Date' if null
-      serviceBookTime: json['serviceBookTime'] ??
-          'Unknown Booking Time', // Default to 'Unknown Booking Time' if null
-      salonModel: SalonModel.fromJson(
-        json['salonModel'],
-      ),
-      userModel: UserModel.fromJson(json['userModel']),
+      orderId: json['orderId'] ?? '',
+      appointmentNo: (json['appointmentNo'] ?? 0) as int,
+      services: (json['services'] as List?)
+              ?.map((item) => ServiceModel.fromJson(item))
+              .toList() ??
+          [],
+      status: json['status'] ?? 'Pending',
+      totalPrice: (json['totalPrice'] ?? 0.0) as double,
+      payment: json['payment'] ?? 'Unknown',
+      serviceDuration: json['serviceDuration'] ?? '0h 0m',
+      serviceDate: json['serviceDate'] ?? 'Unknown Date',
+      serviceStartTime: json['serviceStartTime'] ?? 'Unknown Start Time',
+      serviceEndTime: json['serviceEndTime'] ?? 'Unknown End Time',
+      userNote: json['userNote'] ?? '',
+      salonModel: SalonModel.fromJson(json['salonModel'] ?? {}),
+      userModel: UserModel.fromJson(json['userModel'] ?? {}),
+      timeDateList: (json['timeDateList'] as List?)
+              ?.map((item) => TimeDateModel.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 
@@ -81,10 +74,9 @@ class OrderModel {
       'serviceStartTime': serviceStartTime,
       'serviceEndTime': serviceEndTime,
       'userNote': userNote,
-      'serviceBookDate': serviceBookDate,
-      'serviceBookTime': serviceBookTime,
       'salonModel': salonModel.toJson(),
       'userModel': userModel.toJson(),
+      'timeDateList': timeDateList.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -99,8 +91,9 @@ class OrderModel {
     String? serviceStartTime,
     String? serviceEndTime,
     String? userNote,
-    String? serviceBookDate,
-    String? serviceBookTime,
+    SalonModel? salonModel,
+    UserModel? userModel,
+    List<TimeDateModel>? timeDateList,
   }) {
     return OrderModel(
       orderId: orderId,
@@ -114,10 +107,9 @@ class OrderModel {
       serviceStartTime: serviceStartTime ?? this.serviceStartTime,
       serviceEndTime: serviceEndTime ?? this.serviceEndTime,
       userNote: userNote ?? this.userNote,
-      serviceBookDate: serviceBookDate ?? this.serviceBookDate,
-      serviceBookTime: serviceBookTime ?? this.serviceBookTime,
-      salonModel: salonModel,
-      userModel: userModel,
+      salonModel: salonModel ?? this.salonModel,
+      userModel: userModel ?? this.userModel,
+      timeDateList: timeDateList ?? this.timeDateList,
     );
   }
 }

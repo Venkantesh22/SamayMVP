@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:samay_mvp/constants/router.dart';
@@ -7,7 +6,7 @@ import 'package:samay_mvp/features/appointment_detail/screen/appointment_detail_
 import 'package:samay_mvp/features/appointment_detail/widget/state_text.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
-import 'package:samay_mvp/models/user_order/user_order_model.dart';
+import 'package:samay_mvp/models/order/user_order_model.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 import 'package:samay_mvp/widget/custom_chip.dart';
@@ -81,6 +80,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                     snapshot.data!.isEmpty) {
                                   return const Center(
                                     child: Text("No Order Found"),
+                                  );
+                                }
+                                if (snapshot.hasError) {
+                                  return Center(
+                                    child:
+                                        Text("${snapshot.hasError.toString()}"),
                                   );
                                 }
 
@@ -235,15 +240,31 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                                       children: [
                                                                         Expanded(
                                                                           child:
+                                                                              Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: [
                                                                               Text(
-                                                                            '▪️ ${singleService.servicesName}',
-                                                                            style:
-                                                                                GoogleFonts.roboto(
-                                                                              color: Colors.black,
-                                                                              fontSize: Dimensions.dimenisonNo20,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              letterSpacing: 1,
-                                                                            ),
+                                                                                '▪️ ${singleService.servicesName}',
+                                                                                style: GoogleFonts.roboto(
+                                                                                  color: Colors.black,
+                                                                                  fontSize: Dimensions.dimenisonNo20,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  letterSpacing: 1,
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(height: Dimensions.dimenisonNo5),
+                                                                              Text(
+                                                                                "Service code : ${singleService.serviceCode}",
+                                                                                style: TextStyle(
+                                                                                  color: AppColor.grey,
+                                                                                  fontSize: Dimensions.dimenisonNo15,
+                                                                                  fontFamily: GoogleFonts.lato().fontFamily,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  letterSpacing: 1,
+                                                                                ),
+                                                                              ),
+                                                                            ],
                                                                           ),
                                                                         ),
                                                                         // Displaying service category with a custom chip

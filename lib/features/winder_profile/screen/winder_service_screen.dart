@@ -32,18 +32,39 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
 
+  // void getWinderData() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+  //   await appProvider.callBackFunctionWinder(
+  //     widget.salonModel.id,
+  //     widget.salonModel.adminId,
+  //   );
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
+
   void getWinderData() async {
     setState(() {
       isLoading = true;
     });
-    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
-    await appProvider.callBackFunctionWinder(
-      widget.salonModel.id,
-      widget.salonModel.adminId,
-    );
-    setState(() {
-      isLoading = false;
-    });
+    try {
+      AppProvider appProvider =
+          Provider.of<AppProvider>(context, listen: false);
+      await appProvider.callBackFunctionWinder(
+        widget.salonModel.id,
+        widget.salonModel.adminId,
+      );
+    } catch (e) {
+      // Handle error
+      print("Error fetching winder data: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -240,14 +261,16 @@ class _WinderServiceScreenState extends State<WinderServiceScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: CustomButtom(
-                            text: 'Select Time',
-                            ontap: () {
-                              Routes.instance.push(
-                                  widget: SelectBooking(
-                                      salonModel: widget.salonModel),
-                                  context: context);
-                            })),
+                      child: CustomButtom(
+                        text: 'Select Time',
+                        ontap: () {
+                          Routes.instance.push(
+                              widget:
+                                  SelectBooking(salonModel: widget.salonModel),
+                              context: context);
+                        },
+                      ),
+                    ),
                   ],
                 ),
               )

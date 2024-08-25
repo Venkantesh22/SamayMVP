@@ -4,6 +4,7 @@ class ServiceModel {
   final String categoryId;
   final String categoryName;
   final String servicesName;
+  final String serviceCode;
   final double price;
   final double hours;
   final double minutes;
@@ -15,6 +16,7 @@ class ServiceModel {
     required this.categoryId,
     required this.categoryName,
     required this.servicesName,
+    required this.serviceCode,
     required this.price,
     required this.hours,
     required this.minutes,
@@ -28,6 +30,7 @@ class ServiceModel {
       categoryId: json['categoryId'],
       categoryName: json['categoryName'],
       servicesName: json['servicesName'],
+      serviceCode: json['serviceCode'],
       price: (json['price'] as num?)?.toDouble() ??
           0.0, // Convert to double, default to 0.0 if null
       hours: (json['hours'] as num?)?.toDouble() ??
@@ -45,6 +48,7 @@ class ServiceModel {
       'categoryId': categoryId,
       'categoryName': categoryName,
       'servicesName': servicesName,
+      'serviceCode': serviceCode,
       'price': price,
       'hours': hours,
       'minutes': minutes,

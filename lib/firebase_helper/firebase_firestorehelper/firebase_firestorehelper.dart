@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/service_model/service_model.dart';
-import 'package:samay_mvp/models/user_model.dart';
-import 'package:samay_mvp/models/user_order/user_order_model.dart';
+import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
+import 'package:samay_mvp/models/user_model/user_model.dart';
+import 'package:samay_mvp/models/order/user_order_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 
 class FirebaseFirestoreHelper {
@@ -125,12 +127,13 @@ class FirebaseFirestoreHelper {
     String serviceStartTime,
     String serviceEndTime,
     String userNote,
-    String serviceBookDate,
-    String serviceBookTime,
     BuildContext context,
   ) async {
     try {
       showLoaderDialog(context);
+
+      final List<TimeDateModel> timeDateList = [];
+
       AppProvider appProvider =
           Provider.of<AppProvider>(context, listen: false);
       String? userId = _user.currentUser?.uid;
@@ -161,10 +164,13 @@ class FirebaseFirestoreHelper {
         "id": userInfor.id,
         "userId": userInformation.id,
         "userName": userInformation.name,
-        "phone": userInformation.phone,
-        "email": userInformation.email,
-        "image": userInformation.image,
       });
+      TimeDateModel timeDateModel = TimeDateModel(
+          id: documentReference.id,
+          date: GlobalVariable.getCurrentDate(),
+          time: GlobalVariable.getCurrentTime(),
+          updateBy: "User");
+      timeDateList.add(timeDateModel);
 
       documentReference.set({
         "orderId": documentReference.id,
@@ -172,6 +178,7 @@ class FirebaseFirestoreHelper {
         "salonModel": salonModel.toJson(), // Convert SalonModel to JSON
         "userModel": userModel.toJson(), // Convert SalonModel to JSON
         "services": servicelist.map((e) => e.toJson()).toList(),
+        // "createDateTime": createDateTime.toJson(),
         "status": "Pending",
         "totalPrice": totalPrice,
         "payment": payment,
@@ -180,8 +187,7 @@ class FirebaseFirestoreHelper {
         "serviceStartTime": serviceStartTime,
         "serviceEndTime": serviceEndTime,
         "userNote": userNote,
-        "serviceBookDate": serviceBookDate,
-        "serviceBookTime": serviceBookTime,
+        "timeDateList": timeDateList.map((e) => e.toJson()).toList(),
       });
 
       GlobalVariable.appointmentID = documentReference.id;
@@ -210,10 +216,11 @@ class FirebaseFirestoreHelper {
       List<OrderModel> orderList = querySnapshot.docs
           .map((element) => OrderModel.fromJson(element.data()))
           .toList();
-
+      print(orderList);
       return orderList;
     } catch (e) {
       showMessage('Error ${e.toString()}');
+      print('Error ${e.toString()}');
       return [];
     }
   }

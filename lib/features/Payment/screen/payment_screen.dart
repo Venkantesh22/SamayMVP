@@ -41,21 +41,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int groupValue = 1;
+
   @override
   Widget build(BuildContext context) {
     AppProvider appProvider = Provider.of<AppProvider>(
       context,
     );
-    // Function to get current date and time in a formatted string
-    String getCurrentDate() {
-      DateTime now = DateTime.now();
-      return DateFormat('dd-MM-yyyy').format(now);
-    }
-
-    String getCurrentTime() {
-      DateTime now = DateTime.now();
-      return DateFormat('hh:mm a').format(now); // HH:mm a (e.g. 03:45 PM)
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F3F3),
@@ -177,6 +168,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 text: "Pay & Confime",
                 ontap: () async {
                   showLoaderDialog(context);
+
                   int appointmentNO =
                       await SamayFB.instance.incrementSalonAppointmentNo();
 
@@ -194,8 +186,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     widget.serviceStartTime,
                     widget.serviceEndTime,
                     widget.userNote,
-                    getCurrentDate(),
-                    getCurrentTime(),
                     context,
                   );
                   // ignore: use_build_context_synchronously

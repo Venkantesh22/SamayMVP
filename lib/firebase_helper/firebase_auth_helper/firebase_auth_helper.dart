@@ -3,8 +3,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:samay_mvp/constants/constants.dart';
-import 'package:samay_mvp/models/user_model.dart';
+import 'package:samay_mvp/constants/global_variable.dart';
+import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
+import 'package:samay_mvp/models/user_model/user_model.dart';
 
 class FirebaseAuthHelper {
   static FirebaseAuthHelper instance = FirebaseAuthHelper();
@@ -35,14 +38,22 @@ class FirebaseAuthHelper {
 
       String uidOfCreateUser = userCredential.user!.uid;
 
-      UserModel userModel = UserModel(
+      TimeDateModel timeDateModel = TimeDateModel(
           id: uidOfCreateUser,
-          name: name,
-          phone: int.parse(phone),
-          image:
-              'https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png',
-          email: email,
-          password: password);
+          date: GlobalVariable.getCurrentDate(),
+          time: GlobalVariable.getCurrentTime(),
+          updateBy: "User");
+
+      UserModel userModel = UserModel(
+        id: uidOfCreateUser,
+        name: name,
+        phone: int.parse(phone),
+        image:
+            'https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png',
+        email: email,
+        password: password,
+        timeDateModel: timeDateModel,
+      );
 
       _firestore.collection("users").doc(userModel.id).set(
             userModel.toJson(),
