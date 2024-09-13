@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/constants/global_variable.dart';
@@ -179,7 +178,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     appProvider.getWatchList,
                     widget.salonModel,
                     appProvider.getUserInfornation!,
-                    appProvider.getfinalTotal,
+                    appProvider.getfinalTotal.toString(),
+                    appProvider.getSubTotal.toString(),
+                    GlobalVariable.salonPlatformFees.toString(),
                     groupValue == 1 ? "PAP (Pay At Place)" : "Pay Online",
                     appProvider.getServiceBookingDuration,
                     widget.serviceDate,
@@ -193,7 +194,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   if (value) {
                     showLoaderDialog(context);
                     Future.delayed(
-                      const Duration(seconds: 2),
+                      const Duration(seconds: 1),
                       () {
                         showDialog(
                           context: context,

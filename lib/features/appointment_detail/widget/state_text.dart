@@ -1,21 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:samay_mvp/models/order/user_order_model.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 
 class StateText extends StatelessWidget {
-  final OrderModel orderModel; // Mark orderModel as final
+  final String status; // Mark orderModel as final
   StateText({
     Key? key,
-    required this.orderModel,
+    required this.status,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Check if orderModel is null and handle it gracefully
-    if (orderModel == null) {
+    if (status == null) {
       return Text(
         'Status not available',
         style: GoogleFonts.roboto(
@@ -28,32 +28,22 @@ class StateText extends StatelessWidget {
 
     return Column(
       children: [
-        // reschedule state
-        if (orderModel.status == "Reschedule")
-          Row(
-            children: [
-              Text(
-                orderModel.status,
-                style: GoogleFonts.roboto(
-                  fontSize: Dimensions.dimenisonNo16,
-                  color: AppColor.buttonColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(width: Dimensions.dimenisonNo10),
-              Icon(
-                CupertinoIcons.exclamationmark_circle,
-                size: Dimensions.dimenisonNo18,
+        // (Update) state
+        if (status == "(Update)")
+          Text(
+            status,
+            style: GoogleFonts.roboto(
+                fontSize: Dimensions.dimenisonNo16,
                 color: AppColor.buttonColor,
-              ),
-            ],
+                fontWeight: FontWeight.w500,
+                letterSpacing: .90),
           ),
         // Pending state
-        if (orderModel.status == "Pending")
+        if (status == "Pending")
           Row(
             children: [
               Text(
-                orderModel.status,
+                status,
                 style: GoogleFonts.roboto(
                   fontSize: Dimensions.dimenisonNo16,
                   color: Colors.red,
@@ -69,11 +59,11 @@ class StateText extends StatelessWidget {
             ],
           ),
         // Confirmed state
-        if (orderModel.status == "Confirmed")
+        if (status == "Confirmed")
           Row(
             children: [
               Text(
-                orderModel.status,
+                status,
                 style: GoogleFonts.roboto(
                   fontSize: Dimensions.dimenisonNo16,
                   color: AppColor.buttonColor,
@@ -89,11 +79,11 @@ class StateText extends StatelessWidget {
             ],
           ),
         // Completed state
-        if (orderModel.status == "Completed")
+        if (status == "Completed")
           Row(
             children: [
               Text(
-                orderModel.status,
+                status,
                 style: GoogleFonts.roboto(
                   fontSize: Dimensions.dimenisonNo16,
                   color: Colors.blue,
@@ -109,11 +99,11 @@ class StateText extends StatelessWidget {
             ],
           ),
         // Cancel state
-        if (orderModel.status == "Cancel")
+        if (status == "(Cancel)")
           Row(
             children: [
               Text(
-                orderModel.status,
+                status,
                 style: GoogleFonts.roboto(
                   fontSize: Dimensions.dimenisonNo16,
                   color: Colors.red,
@@ -131,6 +121,25 @@ class StateText extends StatelessWidget {
                   size: Dimensions.dimenisonNo16,
                   color: Colors.red,
                 ),
+              ),
+            ],
+          ),
+        if (status == "InProcces")
+          Row(
+            children: [
+              Text(
+                status,
+                style: GoogleFonts.roboto(
+                  fontSize: Dimensions.dimenisonNo16,
+                  color: AppColor.buttonColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(width: Dimensions.dimenisonNo10),
+              Icon(
+                FontAwesomeIcons.scissors,
+                size: Dimensions.dimenisonNo14,
+                color: AppColor.buttonColor,
               ),
             ],
           ),

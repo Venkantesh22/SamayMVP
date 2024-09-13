@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/constants/global_variable.dart';
@@ -22,8 +21,9 @@ class FirebaseFirestoreHelper {
   Future<List<SalonModel>> getSalonListFB() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await _firebaseFirestore.collectionGroup("salon").get();
-    List<SalonModel> salonList =
-        querySnapshot.docs.map((e) => SalonModel.fromJson(e.data())).toList();
+    List<SalonModel> salonList = querySnapshot.docs
+        .map((e) => SalonModel.fromJson(e.data(), e.id))
+        .toList();
     return salonList;
   }
 
@@ -106,29 +106,22 @@ class FirebaseFirestoreHelper {
     return serviceList;
   }
 
-  // Future<List<AdminModel>> getAdminList() async {
-  //   QuerySnapshot<Map<String, dynamic>> querySnapshot =
-  //       await _firebaseFirestore.collection("admins").get();
-  //   List<AdminModel> adminList =
-  //       querySnapshot.docs.map((e) => AdminModel.fromJson(e.data())).toList();
-  //   return adminList;
-  // }
-
   // Add new upload Appointment to Firebase
   Future<bool> uploadAppointmentInforFB(
-    int appointmentNo,
-    List<ServiceModel> servicelist,
-    SalonModel salonModel,
-    UserModel userModel,
-    double totalPrice,
-    String payment,
-    String serviceDuration,
-    String serviceDate,
-    String serviceStartTime,
-    String serviceEndTime,
-    String userNote,
-    BuildContext context,
-  ) async {
+      int appointmentNo,
+      List<ServiceModel> servicelist,
+      SalonModel salonModel,
+      UserModel userModel,
+      String totalPrice,
+      String subtatal,
+      String platformFees,
+      String payment,
+      String serviceDuration,
+      String serviceDate,
+      String serviceStartTime,
+      String serviceEndTime,
+      String userNote,
+      BuildContext context) async {
     try {
       showLoaderDialog(context);
 
@@ -178,9 +171,10 @@ class FirebaseFirestoreHelper {
         "salonModel": salonModel.toJson(), // Convert SalonModel to JSON
         "userModel": userModel.toJson(), // Convert SalonModel to JSON
         "services": servicelist.map((e) => e.toJson()).toList(),
-        // "createDateTime": createDateTime.toJson(),
         "status": "Pending",
         "totalPrice": totalPrice,
+        "platformFees": platformFees,
+        "subtatal": subtatal,
         "payment": payment,
         "serviceDuration": serviceDuration,
         "serviceDate": serviceDate,
@@ -188,6 +182,8 @@ class FirebaseFirestoreHelper {
         "serviceEndTime": serviceEndTime,
         "userNote": userNote,
         "timeDateList": timeDateList.map((e) => e.toJson()).toList(),
+        "isUpdate": false,
+        "appointmentStatus": "Pending"
       });
 
       GlobalVariable.appointmentID = documentReference.id;
@@ -242,12 +238,42 @@ class FirebaseFirestoreHelper {
     }
   }
 
+  // Update Appointment by Id
+  Future<bool> updateAppointmentFB(
+      String userId, appointmentId, OrderModel orderModel) async {
+    await _firebaseFirestore
+        .collection('UserOrder')
+        .doc(userId)
+        .collection('order')
+        .doc(appointmentId)
+        .update(orderModel.toJson());
+
+    return true;
+  }
+
   //Get User infor
   Future<UserModel> getUserInforFB() async {
     String? userId = _user.currentUser?.uid;
     DocumentSnapshot<Map<String, dynamic>> querySnapshot =
         await _firebaseFirestore.collection('users').doc(userId).get();
-
     return UserModel.fromJson(querySnapshot.data()!);
+  }
+
+  //Get vender infor
+  Future<UserModel> getVenderByIDFB() async {
+    String? userId = _user.currentUser?.uid;
+    DocumentSnapshot<Map<String, dynamic>> querySnapshot =
+        await _firebaseFirestore.collection('users').doc(userId).get();
+    return UserModel.fromJson(querySnapshot.data()!);
+  }
+
+  // Update user Profile withImage by Id
+  Future<bool> updateUserProfileFB(UserModel userModel) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    await _firebaseFirestore.collection('users').doc(userId).update(
+          userModel.toJson(),
+        );
+    // Update Firebase Auth email and password
+    return true;
   }
 }

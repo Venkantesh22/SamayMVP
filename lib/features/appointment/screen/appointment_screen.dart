@@ -147,16 +147,32 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      orderModel
-                                                          .salonModel.name,
-                                                      style: GoogleFonts.roboto(
-                                                        fontSize: Dimensions
-                                                            .dimenisonNo20,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          orderModel
+                                                              .salonModel.name,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                            fontSize: Dimensions
+                                                                .dimenisonNo20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: Dimensions
+                                                              .dimenisonNo12,
+                                                        ),
+                                                        if (orderModel.isUpdate)
+                                                          const CircleAvatar(
+                                                            radius: 6,
+                                                            backgroundColor:
+                                                                AppColor
+                                                                    .buttonColor,
+                                                          )
+                                                      ],
                                                     ),
                                                     SizedBox(
                                                         height: Dimensions
@@ -175,7 +191,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                         height: Dimensions
                                                             .dimenisonNo8),
                                                     StateText(
-                                                        orderModel: orderModel)
+                                                      status: orderModel.status,
+                                                    ),
                                                   ],
                                                 ),
                                               ),

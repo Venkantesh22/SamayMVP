@@ -168,7 +168,11 @@ bool loginVaildation(String email, String password) {
 }
 
 bool signUpVaildation(
-    String email, String password, String name, String phone) {
+  String email,
+  String password,
+  String name,
+  String phone,
+) {
   if (email.isEmpty && password.isEmpty && name.isEmpty && phone.isEmpty) {
     showMessage("All Fields are empty");
     return false;
@@ -186,6 +190,27 @@ bool signUpVaildation(
     return false;
   } else if (password.isEmpty) {
     showMessage("Password is Empty");
+    return false;
+  } else {
+    return true;
+  }
+}
+
+bool updateProfileVaildation(
+  String name,
+  String phone,
+) {
+  if (name.isEmpty && phone.isEmpty) {
+    showMessage("All Fields are empty");
+    return false;
+  } else if (name.isEmpty) {
+    showMessage("Name is Empty");
+    return false;
+  } else if (phone.isEmpty) {
+    showMessage("Phone is Empty");
+    return false;
+  } else if (phone.length != 10) {
+    showMessage("Phone is Empty");
     return false;
   } else {
     return true;

@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
@@ -47,7 +46,7 @@ class FirebaseAuthHelper {
       UserModel userModel = UserModel(
         id: uidOfCreateUser,
         name: name,
-        phone: int.parse(phone),
+        phone: phone,
         image:
             'https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png',
         email: email,

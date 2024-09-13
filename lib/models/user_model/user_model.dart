@@ -19,7 +19,7 @@ class UserModel {
 
   String id;
   String name;
-  int phone;
+  String phone;
   String image;
   String email;
   String password;
@@ -28,11 +28,11 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         id: json["id"],
         name: json["name"],
-        phone: json["phone"] != null ? int.parse(json["phone"].toString()) : 0,
+        phone: json["phone"],
         image: json["image"],
         email: json["email"],
         password: json["password"],
-        timeDateModel: TimeDateModel.fromJson(json["timeDateModel"]),
+        timeDateModel: TimeDateModel.fromJson(json["timeDateModel"] ?? {}),
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,25 +42,22 @@ class UserModel {
         "image": image,
         "email": email,
         "password": password,
-        "timeDateModel": timeDateModel.toJson(),
+        // "timeDateModel": timeDateModel.toJson(),
       };
 
   UserModel copyWith({
     String? name,
-    int? phone,
+    String? phone,
     String? image,
-    String? email,
-    String? password,
-    TimeDateModel? timeDateModel,
   }) {
     return UserModel(
       id: id,
       name: name ?? this.name,
       phone: phone ?? this.phone,
       image: image ?? this.image,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      timeDateModel: timeDateModel ?? this.timeDateModel,
+      email: email,
+      password: password,
+      timeDateModel: timeDateModel,
     );
   }
 }

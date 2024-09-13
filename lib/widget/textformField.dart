@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
   bool obscureForPassword = false;
   final TextInputType keyboardType;
   final Icon prefixIcon;
+  bool readOnly;
 
   CustomTextField({
     Key? key,
@@ -18,6 +19,7 @@ class CustomTextField extends StatefulWidget {
     required this.obscureForPassword,
     required this.keyboardType,
     required this.prefixIcon,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: widget.readOnly,
       obscureText: widget.obscureForPassword,
       style: TextStyle(fontSize: Dimensions.dimenisonNo18, color: Colors.white),
       controller: widget.controller,

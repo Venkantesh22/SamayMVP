@@ -1,5 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:samay_mvp/constants/constants.dart';
+import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
+import 'package:samay_mvp/firebase_helper/firebase_storage_helper/firebase_storage_helper.dart';
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/service_model/service_model.dart';
@@ -45,7 +53,7 @@ class AppProvider with ChangeNotifier {
   void calculateSubTotal() {
     _subTotal = _watchList.fold(0.0, (sum, item) => sum + item.price);
     print("subTotal :- $_subTotal");
-    _finalTotal = _subTotal + 20;
+    _finalTotal = _subTotal + GlobalVariable.salonPlatformFees;
     print("finalTotal :- $_finalTotal");
     notifyListeners();
   }
@@ -99,7 +107,7 @@ class AppProvider with ChangeNotifier {
       Map<String, dynamic>? salonData =
           await _firebaseFirestoreHelper.getSingleSalonInfoFB(adminId, salonId);
       if (salonData != null) {
-        _salonModel = SalonModel.fromJson(salonData);
+        _salonModel = SalonModel.fromJson(salonData, salonId);
         notifyListeners();
       }
     } catch (e) {
@@ -125,6 +133,36 @@ class AppProvider with ChangeNotifier {
 //Fetch User information from Firebase
   void getUserInfoFirebasePro() async {
     _userModel = await _firebaseFirestoreHelper.getUserInforFB();
+    notifyListeners();
+  }
+
+//Update user Profile
+  void updateUserInfoFirebase(
+      BuildContext context, UserModel userModel, File? file) async {
+    if (file == null) {
+      showLoaderDialog(context);
+
+      _userModel = userModel;
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(_userModel!.id)
+          .set(_userModel!.toJson());
+      Navigator.of(context, rootNavigator: true).pop();
+      Navigator.of(context).pop();
+    } else {
+      showLoaderDialog(context);
+
+      String imageUrl = await FirebaseStorageHelper.instance
+          .updateProfileImage(file, _userModel!.image, userModel);
+      _userModel = userModel.copyWith(image: imageUrl);
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(_userModel!.id)
+          .set(_userModel!.toJson());
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+    showMessage("Successfully updated profile");
+
     notifyListeners();
   }
 }

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/appointment/screen/appointment_screen.dart';
 import 'package:samay_mvp/features/home/screen/homescreen.dart';
+import 'package:samay_mvp/features/profile/screen/profile.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -39,7 +40,15 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Appointment'),
             onTap: () {
               Routes.instance
-                  .push(widget: AppointmentScreen(), context: context);
+                  .push(widget: const AppointmentScreen(), context: context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
+            onTap: () {
+              Routes.instance
+                  .push(widget: const ProfileScreen(), context: context);
             },
           ),
           ListTile(

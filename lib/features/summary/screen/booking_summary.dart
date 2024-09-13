@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/Payment/screen/payment_screen.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
@@ -337,36 +338,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           ),
                         ],
                       ),
-                      // SizedBox(height: Dimensions.dimenisonNo12),
-                      // Text(
-                      //   widget.salonModel.name,
-                      //   style: TextStyle(
-                      //     color: Colors.black,
-                      //     fontSize: Dimensions.dimenisonNo20,
-                      //     fontWeight: FontWeight.bold,
-                      //     letterSpacing: 1.0,
-                      //   ),
-                      // ),
-                      // SizedBox(height: Dimensions.dimenisonNo5),
-
-                      // // Salon Location
-                      // Row(
-                      //   children: [
-                      //     Icon(
-                      //       Icons.location_on_rounded,
-                      //       size: Dimensions.dimenisonNo22,
-                      //     ),
-                      //     SizedBox(width: Dimensions.dimenisonNo5),
-                      //     Text(
-                      //       widget.salonModel.address,
-                      //       style: TextStyle(
-                      //         fontSize: Dimensions.dimenisonNo18,
-                      //         fontWeight: FontWeight.w500,
-                      //         letterSpacing: 0.90,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                     ],
                   ),
                 ),
@@ -444,7 +415,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             size: Dimensions.dimenisonNo18,
                           ),
                           Text(
-                            '20.0',
+                            GlobalVariable.salonPlatformFees.toString(),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: Dimensions.dimenisonNo16,

@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:samay_mvp/constants/constants.dart';
-import 'package:samay_mvp/constants/router.dart';
+import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
-import 'package:samay_mvp/features/appointment/screen/appointment_screen.dart';
 import 'package:samay_mvp/features/appointment_detail/widget/custom_text.dart';
 import 'package:samay_mvp/features/appointment_detail/widget/state_text.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
@@ -32,7 +30,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-    final double subtotal = widget.orderModel.totalPrice - 20;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -79,39 +76,62 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   ),
                   Spacer(),
                   widget.orderModel.status != "Completed"
-                      ? IconButton(
-                          onPressed: () {
-                            showDeleteAlertDialog(
-                              context,
-                              "Delete Appointment",
-                              "Do you want to delete this appointment",
-                              () {
-                                try {
-                                  showLoaderDialog(context);
-                                  FirebaseFirestoreHelper.instance
-                                      .deleteAppointmentFB(
-                                          widget.orderModel.orderId);
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  Navigator.of(
+                      ? Opacity(
+                          opacity: widget.orderModel.status == "(Cancel)"
+                              ? 0.5
+                              : 1.0,
+                          child: IgnorePointer(
+                            ignoring: widget.orderModel.status == "(Cancel)",
+                            child: IconButton(
+                              onPressed: () {
+                                showDeleteAlertDialog(
                                     context,
-                                  ).pop();
-                                  Routes.instance.push(
-                                      widget: AppointmentScreen(),
-                                      context: context);
-                                  showMessage(
-                                      'Successfully deleted Appointment');
-                                } catch (e) {
-                                  showMessage(
-                                      'Error occurred while deleted Appointment : ${e.toString()}');
-                                }
+                                    "Cancel Appointment",
+                                    "Do you want Cancel Appointment", () {
+                                  try {
+                                    showLoaderDialog(context);
+                                    //create emptye list of timeDateList and add currently time for update
+                                    List<TimeDateModel> timeDateList = [];
+                                    timeDateList
+                                        .addAll(widget.orderModel.timeDateList);
+                                    TimeDateModel timeDateModel = TimeDateModel(
+                                        id: widget.orderModel.orderId,
+                                        date: GlobalVariable.getCurrentDate(),
+                                        time: GlobalVariable.getCurrentTime(),
+                                        updateBy:
+                                            "${widget.orderModel.userModel.name} (Cancel the Appointment)");
+                                    timeDateList.add(timeDateModel);
+                                    OrderModel orderUpdate = widget.orderModel
+                                        .copyWith(
+                                            status: "(Cancel)",
+                                            timeDateList: timeDateList);
+
+                                    FirebaseFirestoreHelper.instance
+                                        .updateAppointmentFB(
+                                            widget.orderModel.userModel.id,
+                                            widget.orderModel.orderId,
+                                            orderUpdate);
+
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                    Navigator.of(context).pop();
+                                    showMessage(
+                                        "Appointment has been cancelled ");
+                                  } catch (e) {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                    showMessage(
+                                        "Error : Appointment is not cancelled ");
+                                    print("Error : $e ");
+                                  }
+                                });
                               },
-                            );
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            color: AppColor.pendingColor,
-                            size: Dimensions.dimenisonNo40,
+                              icon: Icon(
+                                Icons.delete,
+                                color: AppColor.pendingColor,
+                                size: Dimensions.dimenisonNo40,
+                              ),
+                            ),
                           ),
                         )
                       : SizedBox(),
@@ -132,7 +152,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     ),
                   ),
                   Spacer(),
-                  StateText(orderModel: widget.orderModel),
+                  StateText(status: widget.orderModel.status),
                 ],
               ),
               Column(
@@ -354,13 +374,19 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Subtotal:",
-                    lastText: subtotal.toString(),
+                    lastText: widget.orderModel.subtatal,
+                    showicon: true,
+                  ),
+                  SizedBox(height: Dimensions.dimenisonNo5),
+                  CustomText(
+                    firstText: "Platform fees",
+                    lastText: widget.orderModel.platformFees,
                     showicon: true,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Total:",
-                    lastText: widget.orderModel.totalPrice.toString(),
+                    lastText: widget.orderModel.totalPrice,
                     showicon: true,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo20),
@@ -468,31 +494,41 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     shrinkWrap: true,
                     itemCount: widget.orderModel.timeDateList.length,
                     itemBuilder: (context, index) {
-                      TimeDateModel timeDateModel =
-                          widget.orderModel.timeDateList[index];
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "Book on  ${widget.orderModel.timeDateList[0].date}  at  ${widget.orderModel.timeDateList[0].time} by ${widget.orderModel.userModel.name}"),
-                          Column(
-                            children: widget.orderModel.timeDateList.length > 1
-                                ? [
-                                    ...widget.orderModel.timeDateList.map(
-                                      (singleTimeDate) {
-                                        return singleTimeDate.updateBy == "User"
-                                            ? Text(
-                                                "update on ${singleTimeDate.date}  at ${singleTimeDate.time} by ${widget.orderModel.userModel.name}")
-                                            : Text(
-                                                "update on ${singleTimeDate.date}  at ${singleTimeDate.time} by ${widget.orderModel.salonModel.name}");
-                                      },
-                                    )
-                                  ]
-                                : [],
-                          )
-                        ],
-                      );
+                      if (index == 0) {
+                        // Display the first element separately
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Book on  ${widget.orderModel.timeDateList[0].date}  at  ${widget.orderModel.timeDateList[0].time} by ${widget.orderModel.userModel.name}",
+                              // style:
+                              //     TextStyle(fontSize: Dimensions.dimenisonNo12),
+                            ),
+                            // Display all remaining elements
+                            SizedBox(
+                              height: 4,
+                            ),
+                            if (widget.orderModel.timeDateList.length > 1)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ...widget.orderModel.timeDateList
+                                      .sublist(1)
+                                      .map(
+                                    (singleTimeDate) {
+                                      return Text(
+                                        "update on ${singleTimeDate.date} at ${singleTimeDate.time} by ${singleTimeDate.updateBy}",
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                          ],
+                        );
+                      } else {
+                        // Returning an empty container to avoid redundant data (first element)
+                        return SizedBox.shrink();
+                      }
                     },
                   ),
                 ],
