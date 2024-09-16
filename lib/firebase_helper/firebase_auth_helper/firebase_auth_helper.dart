@@ -70,4 +70,17 @@ class FirebaseAuthHelper {
   void signOut() async {
     await _auth.signOut();
   }
+
+  //Forget Password Function
+
+  void resetPassword(String email) async {
+    try {
+      _auth.sendPasswordResetEmail(email: email);
+      showMessage("Password Reset Email has been send!");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        showMessage(" Invalid email.");
+      }
+    }
+  }
 }

@@ -5,9 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
-import 'package:samay_mvp/firebase_helper/firebase_auth_helper/firebase_auth_helper.dart';
-import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
-import 'package:samay_mvp/firebase_helper/firebase_storage_helper/firebase_storage_helper.dart';
 import 'package:samay_mvp/models/user_model/user_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
@@ -26,11 +23,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController password = TextEditingController();
-  TextEditingController email = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
-
-  File? _selectedImage;
 
   bool isLoading = false;
   late UserModel userModel;
@@ -49,26 +43,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     appProvider.getUserInfoFirebasePro();
     userModel = appProvider.getUserInfornation!;
     password.text = userModel.password;
-    email.text = userModel.email;
     name.text = userModel.name;
     phone.text = userModel.phone.toString();
     setState(() {
       isLoading = false;
     });
   }
-
-  final ImagePicker _picker = ImagePicker();
-
-  // Future<void> _pickImage() async {
-  //   final XFile? pickedFile =
-  //       await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _selectedImage = File(pickedFile.path);
-  //     });
-  //   }
-  // }
 
   File? image;
   void takePicture() async {
@@ -84,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void dispose() {
     password.dispose();
-    email.dispose();
     name.dispose();
     phone.dispose();
     super.dispose();
@@ -146,6 +125,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 radius: 55,
                               ),
                             ),
+                      Text(
+                        userModel.email,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Dimensions.dimenisonNo16),
+                      ),
+
                       SizedBox(height: Dimensions.dimenisonNo20),
                       CustomTextField(
                           prefixIcon: const Icon(Icons.person_outline),

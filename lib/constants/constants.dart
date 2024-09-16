@@ -216,3 +216,14 @@ bool updateProfileVaildation(
     return true;
   }
 }
+
+bool emailVaildation(
+  String email,
+) {
+  if (email.isEmpty) {
+    showMessage("Email is Empty");
+    return false;
+  } else {
+    return true;
+  }
+}

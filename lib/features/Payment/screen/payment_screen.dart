@@ -176,8 +176,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       .uploadAppointmentInforFB(
                     appointmentNO,
                     appProvider.getWatchList,
-                    widget.salonModel,
-                    appProvider.getUserInfornation!,
+                    appProvider.getUserInfornation!.id,
+                    widget.salonModel.id,
+                    widget.salonModel.adminId,
+                    // widget.salonModel,
+                    // appProvider.getUserInfornation!,
                     appProvider.getfinalTotal.toString(),
                     appProvider.getSubTotal.toString(),
                     GlobalVariable.salonPlatformFees.toString(),

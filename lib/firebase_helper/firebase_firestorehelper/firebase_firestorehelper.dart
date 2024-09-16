@@ -110,8 +110,11 @@ class FirebaseFirestoreHelper {
   Future<bool> uploadAppointmentInforFB(
       int appointmentNo,
       List<ServiceModel> servicelist,
-      SalonModel salonModel,
-      UserModel userModel,
+      // SalonModel salonModel,
+      // UserModel userModel,
+      String userId,
+      String vendorId,
+      String adminId,
       String totalPrice,
       String subtatal,
       String platformFees,
@@ -168,8 +171,11 @@ class FirebaseFirestoreHelper {
       documentReference.set({
         "orderId": documentReference.id,
         "appointmentNo": appointmentNo,
-        "salonModel": salonModel.toJson(), // Convert SalonModel to JSON
-        "userModel": userModel.toJson(), // Convert SalonModel to JSON
+        // "salonModel": salonModel.toJson(), // Convert SalonModel to JSON
+        // "userModel": userModel.toJson(), // Convert SalonModel to JSON
+        "userId": userId,
+        "vendorId": vendorId,
+        "adminId": adminId,
         "services": servicelist.map((e) => e.toJson()).toList(),
         "status": "Pending",
         "totalPrice": totalPrice,
@@ -259,21 +265,30 @@ class FirebaseFirestoreHelper {
     return UserModel.fromJson(querySnapshot.data()!);
   }
 
-  //Get vender infor
-  Future<UserModel> getVenderByIDFB() async {
-    String? userId = _user.currentUser?.uid;
+  // Get salon information
+  Future<SalonModel?> getSalonInformation(
+    String adminId,
+    String vendorId,
+  ) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> querySnapshot =
+          await _firebaseFirestore
+              .collection("admins")
+              .doc(adminId)
+              .collection('salon')
+              .doc(vendorId)
+              .get();
+      return SalonModel.fromJson(querySnapshot.data()!, querySnapshot.id);
+    } catch (e) {
+      showMessage('Error fetching vender: $e');
+    }
+    return null;
+  }
+
+  //Get User by Order userId infor
+  Future<UserModel> getUserInforOrderFB(String userId) async {
     DocumentSnapshot<Map<String, dynamic>> querySnapshot =
         await _firebaseFirestore.collection('users').doc(userId).get();
     return UserModel.fromJson(querySnapshot.data()!);
-  }
-
-  // Update user Profile withImage by Id
-  Future<bool> updateUserProfileFB(UserModel userModel) async {
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-    await _firebaseFirestore.collection('users').doc(userId).update(
-          userModel.toJson(),
-        );
-    // Update Firebase Auth email and password
-    return true;
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
 import 'package:samay_mvp/constants/constants.dart';
 import 'package:samay_mvp/constants/global_variable.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
@@ -8,28 +10,30 @@ import 'package:samay_mvp/features/appointment_detail/widget/state_text.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
 import 'package:samay_mvp/models/order/user_order_model.dart';
+import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/models/timestamped_model/date_time_model.dart';
+import 'package:samay_mvp/models/user_model/user_model.dart';
+import 'package:samay_mvp/provider/app_provider.dart';
 import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
 import 'package:samay_mvp/widget/custom_chip.dart';
 import 'package:samay_mvp/widget/dotted_line.dart';
 
-class AppointmentDetailScreen extends StatefulWidget {
+class AppointmentDetailScreen extends StatelessWidget {
   final OrderModel orderModel;
+  final SalonModel salonModel;
+
   const AppointmentDetailScreen({
     Key? key,
     required this.orderModel,
+    required this.salonModel,
   }) : super(key: key);
 
   @override
-  State<AppointmentDetailScreen> createState() =>
-      _AppointmentDetailScreenState();
-}
-
-class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
-  @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    AppProvider appProvider = Provider.of<AppProvider>(context);
+    final UserModel userModel = appProvider.getUserInfornation!;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -49,7 +53,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Appointment ID\n${widget.orderModel.orderId}',
+                          'Appointment ID\n${orderModel.orderId}',
                           overflow: TextOverflow.clip,
                           style: TextStyle(
                             color: Colors.black.withOpacity(0.6),
@@ -62,7 +66,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           height: Dimensions.dimenisonNo5,
                         ),
                         Text(
-                          'Appointment NO : 000${widget.orderModel.appointmentNo}',
+                          'Appointment NO : 000${orderModel.appointmentNo}',
                           overflow: TextOverflow.clip,
                           style: TextStyle(
                             color: Colors.black.withOpacity(0.6),
@@ -75,13 +79,11 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     ),
                   ),
                   Spacer(),
-                  widget.orderModel.status != "Completed"
+                  orderModel.status != "Completed"
                       ? Opacity(
-                          opacity: widget.orderModel.status == "(Cancel)"
-                              ? 0.5
-                              : 1.0,
+                          opacity: orderModel.status == "(Cancel)" ? 0.5 : 1.0,
                           child: IgnorePointer(
-                            ignoring: widget.orderModel.status == "(Cancel)",
+                            ignoring: orderModel.status == "(Cancel)",
                             child: IconButton(
                               onPressed: () {
                                 showDeleteAlertDialog(
@@ -93,24 +95,22 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                     //create emptye list of timeDateList and add currently time for update
                                     List<TimeDateModel> timeDateList = [];
                                     timeDateList
-                                        .addAll(widget.orderModel.timeDateList);
+                                        .addAll(orderModel.timeDateList);
                                     TimeDateModel timeDateModel = TimeDateModel(
-                                        id: widget.orderModel.orderId,
+                                        id: orderModel.orderId,
                                         date: GlobalVariable.getCurrentDate(),
                                         time: GlobalVariable.getCurrentTime(),
                                         updateBy:
-                                            "${widget.orderModel.userModel.name} (Cancel the Appointment)");
+                                            "${userModel!.name} (Cancel the Appointment)");
                                     timeDateList.add(timeDateModel);
-                                    OrderModel orderUpdate = widget.orderModel
-                                        .copyWith(
+                                    OrderModel orderUpdate =
+                                        orderModel.copyWith(
                                             status: "(Cancel)",
                                             timeDateList: timeDateList);
 
                                     FirebaseFirestoreHelper.instance
-                                        .updateAppointmentFB(
-                                            widget.orderModel.userModel.id,
-                                            widget.orderModel.orderId,
-                                            orderUpdate);
+                                        .updateAppointmentFB(userModel.id,
+                                            orderModel.orderId, orderUpdate);
 
                                     Navigator.of(context, rootNavigator: true)
                                         .pop();
@@ -152,7 +152,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     ),
                   ),
                   Spacer(),
-                  StateText(status: widget.orderModel.status),
+                  StateText(status: orderModel.status),
                 ],
               ),
               Column(
@@ -161,28 +161,28 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Appointment Date:",
-                    lastText: widget.orderModel.serviceDate,
+                    lastText: orderModel.serviceDate,
                     // showicon: true,
                     // icon: Icons.watch_later_outlined,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Appointment Start Time:",
-                    lastText: widget.orderModel.serviceStartTime,
+                    lastText: orderModel.serviceStartTime,
                     // showicon: true,
                     // icon: Icons.watch_later_outlined,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Appointment End Time:",
-                    lastText: widget.orderModel.serviceEndTime,
+                    lastText: orderModel.serviceEndTime,
                     // showicon: true,
                     // icon: Icons.watch_later_outlined,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Appointment Duration:",
-                    lastText: widget.orderModel.serviceDuration,
+                    lastText: orderModel.serviceDuration,
                     // showicon: true,
                     // icon: Icons.watch_later_outlined,
                   ),
@@ -206,8 +206,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                 padding:
                     EdgeInsets.symmetric(horizontal: Dimensions.dimenisonNo10),
                 child: Text(
-                  widget.orderModel.userNote.length > 2
-                      ? widget.orderModel.userNote
+                  orderModel.userNote.length > 2
+                      ? orderModel.userNote
                       : "No user note",
                   style: TextStyle(
                     color: Colors.black,
@@ -229,7 +229,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              ...widget.orderModel.services.map(
+              ...orderModel.services.map(
                 (singleService) {
                   return Container(
                     margin: EdgeInsets.only(top: Dimensions.dimenisonNo12),
@@ -369,24 +369,24 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Payment Method:",
-                    lastText: widget.orderModel.payment,
+                    lastText: orderModel.payment,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Subtotal:",
-                    lastText: widget.orderModel.subtatal,
+                    lastText: orderModel.subtatal,
                     showicon: true,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Platform fees",
-                    lastText: widget.orderModel.platformFees,
+                    lastText: orderModel.platformFees,
                     showicon: true,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo5),
                   CustomText(
                     firstText: "Total:",
-                    lastText: widget.orderModel.totalPrice,
+                    lastText: orderModel.totalPrice,
                     showicon: true,
                   ),
                   SizedBox(height: Dimensions.dimenisonNo20),
@@ -416,7 +416,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Image.network(
-                          widget.orderModel.salonModel.image!,
+                          salonModel.image!,
                           fit: BoxFit
                               .cover, // Ensures the image covers the container properly
                           errorBuilder: (context, error, stackTrace) =>
@@ -429,7 +429,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.orderModel.salonModel.name,
+                              salonModel.name,
                               style: GoogleFonts.roboto(
                                 fontSize: Dimensions.dimenisonNo20,
                                 fontWeight: FontWeight.bold,
@@ -441,7 +441,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                               padding: EdgeInsets.only(
                                   left: Dimensions.dimenisonNo5),
                               child: Text(
-                                widget.orderModel.salonModel.salonType,
+                                salonModel.salonType,
                                 style: TextStyle(
                                   // color: Colors.black,
                                   color: Color.fromARGB(255, 88, 87, 87),
@@ -466,7 +466,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                       SizedBox(width: Dimensions.dimenisonNo5),
                       Expanded(
                         child: Text(
-                          widget.orderModel.salonModel.address,
+                          salonModel.address,
                           overflow: TextOverflow.clip,
                           style: GoogleFonts.roboto(
                             fontSize: Dimensions.dimenisonNo16,
@@ -492,7 +492,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   SizedBox(height: Dimensions.dimenisonNo10),
                   ListView.builder(
                     shrinkWrap: true,
-                    itemCount: widget.orderModel.timeDateList.length,
+                    itemCount: orderModel.timeDateList.length,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         // Display the first element separately
@@ -500,7 +500,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Book on  ${widget.orderModel.timeDateList[0].date}  at  ${widget.orderModel.timeDateList[0].time} by ${widget.orderModel.userModel.name}",
+                              "Book on  ${orderModel.timeDateList[0].date}  at  ${orderModel.timeDateList[0].time} by ${userModel.name}",
                               // style:
                               //     TextStyle(fontSize: Dimensions.dimenisonNo12),
                             ),
@@ -508,13 +508,11 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                             SizedBox(
                               height: 4,
                             ),
-                            if (widget.orderModel.timeDateList.length > 1)
+                            if (orderModel.timeDateList.length > 1)
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ...widget.orderModel.timeDateList
-                                      .sublist(1)
-                                      .map(
+                                  ...orderModel.timeDateList.sublist(1).map(
                                     (singleTimeDate) {
                                       return Text(
                                         "update on ${singleTimeDate.date} at ${singleTimeDate.time} by ${singleTimeDate.updateBy}",
