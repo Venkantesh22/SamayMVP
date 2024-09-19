@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:samay_mvp/features/winder_profile/widgets/service_tap_with_description.dart';
+import 'package:samay_mvp/features/vender_profile/widgets/service_tap_with_description.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
@@ -34,31 +34,6 @@ class _CategoryTapState extends State<CategoryTap> {
     _fetchWinderData();
   }
 
-  // Future<void> _fetchWinderData() async {
-  //   setState(() {
-  //     isLoading = true;
-  //     errorMessage = null;
-  //   });
-
-  //   try {
-  //     serviceModelList =
-  //         await FirebaseFirestoreHelper.instance.getServicesListFB(
-  //       widget.salonModel.id,
-  //       widget.salonModel.adminId,
-  //       widget.categoryModel.id,
-  //     );
-  //     AppProvider appProvider =
-  //         Provider.of<AppProvider>(context, listen: false);
-  //   } catch (e, stackTrace) {
-  //     // Log the error for debugging purposes
-  //     print('Error fetching services: $e');
-  //     print('Stack trace: $stackTrace');
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
   Future<void> _fetchWinderData() async {
     setState(() {
       isLoading = true;
@@ -162,10 +137,6 @@ class _CategoryTapState extends State<CategoryTap> {
                             ServiceModel serviceModel = serviceModelList[index];
 
                             return ServiceTapWithDescription(
-                                isAdd: appProvider.getWatchList
-                                        .contains(serviceModel)
-                                    ? true
-                                    : false,
                                 serviceModel: serviceModel);
                           },
                         ),

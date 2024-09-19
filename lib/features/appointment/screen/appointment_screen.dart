@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:samay_mvp/constants/router.dart';
 import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/appointment/widget/order_tap.dart';
-import 'package:samay_mvp/features/appointment_detail/screen/appointment_detail_screen.dart';
-import 'package:samay_mvp/features/appointment_detail/widget/state_text.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/firebase_helper/firebase_firestorehelper/firebase_firestorehelper.dart';
 import 'package:samay_mvp/models/order/user_order_model.dart';
-import 'package:samay_mvp/utility/color.dart';
 import 'package:samay_mvp/utility/dimension.dart';
-import 'package:samay_mvp/widget/custom_chip.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});

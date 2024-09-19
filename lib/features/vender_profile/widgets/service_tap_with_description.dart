@@ -10,11 +10,9 @@ import 'package:samay_mvp/widget/dotted_line.dart';
 
 class ServiceTapWithDescription extends StatefulWidget {
   final ServiceModel serviceModel;
-  final bool isAdd;
   const ServiceTapWithDescription({
     Key? key,
     required this.serviceModel,
-    required this.isAdd,
   }) : super(key: key);
 
   @override
@@ -131,32 +129,14 @@ class _ServiceTapWithDescriptionState extends State<ServiceTapWithDescription> {
                   ),
                   const Spacer(),
                   CustomButtom(
-                    text: widget.isAdd ? "Remove -" : "Add+",
+                    text: "Add+",
                     ontap: () {
-                      if (widget.isAdd) {
-                        appProvider
-                            .removeServiceToWatchList(widget.serviceModel);
-                      } else {
-                        appProvider.addServiceToWatchList(widget.serviceModel);
-                      }
+                      appProvider.addServiceToWatchList(widget.serviceModel);
+
                       appProvider.calculateSubTotal();
                       appProvider.calculateTotalBookingDuration();
                     },
                   )
-
-                  // CustomButtom(
-                  //   text: widget.isAdd ? "remove -" : "Add+",
-                  //   ontap: () {
-                  //     setState(() {
-                  //       appProvider.addServiceToWatchList(widget.serviceModel);
-                  //     });
-                  //     appProvider.calculateSubTotal();
-                  //     appProvider.calculateTotalBookingDuration();
-                  //     setState(() {
-                  //       serviceList.add(widget.serviceModel);
-                  //     });
-                  //   },
-                  // ),
                 ],
               ),
               SizedBox(height: Dimensions.dimenisonNo16),

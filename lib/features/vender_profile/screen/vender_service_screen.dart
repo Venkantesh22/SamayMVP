@@ -6,9 +6,9 @@ import 'package:samay_mvp/features/app_bar/app_bar.dart';
 import 'package:samay_mvp/features/drawer/app_drawer.dart';
 import 'package:samay_mvp/features/select_time/screen/select_booking.dart';
 import 'package:samay_mvp/features/watch_list/screen/watch_list.dart';
-import 'package:samay_mvp/features/winder_profile/screen/winder_profile_screen.dart';
-import 'package:samay_mvp/features/winder_profile/widgets/category_tap.dart';
-import 'package:samay_mvp/features/winder_profile/widgets/two_button.dart';
+import 'package:samay_mvp/features/vender_profile/screen/vender_profile_screen.dart';
+import 'package:samay_mvp/features/vender_profile/widgets/category_tap.dart';
+import 'package:samay_mvp/features/vender_profile/widgets/two_button.dart';
 import 'package:samay_mvp/models/category_model/category_model.dart';
 import 'package:samay_mvp/models/salon_form_models/salon_infor_model.dart';
 import 'package:samay_mvp/provider/app_provider.dart';
@@ -31,20 +31,6 @@ class WinderServiceScreen extends StatefulWidget {
 class _WinderServiceScreenState extends State<WinderServiceScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
-
-  // void getWinderData() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
-  //   await appProvider.callBackFunctionWinder(
-  //     widget.salonModel.id,
-  //     widget.salonModel.adminId,
-  //   );
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
 
   void getWinderData() async {
     setState(() {
